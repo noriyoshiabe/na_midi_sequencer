@@ -1,0 +1,242 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02A92C8615B9E3870016D3CA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02A92C8515B9E3870016D3CA /* Foundation.framework */; };
+		02A92C8915B9E3870016D3CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A92C8815B9E3870016D3CA /* main.m */; };
+		02A92C8D15B9E3870016D3CA /* midi.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 02A92C8C15B9E3870016D3CA /* midi.1 */; };
+		02A92C9415B9E4780016D3CA /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02A92C9315B9E4780016D3CA /* CoreMIDI.framework */; };
+		02A92C9615B9E52B0016D3CA /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02A92C9515B9E52B0016D3CA /* CoreAudio.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		02A92C7F15B9E3870016D3CA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				02A92C8D15B9E3870016D3CA /* midi.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		02A92C8115B9E3870016D3CA /* midi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = midi; sourceTree = BUILT_PRODUCTS_DIR; };
+		02A92C8515B9E3870016D3CA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		02A92C8815B9E3870016D3CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		02A92C8B15B9E3870016D3CA /* midi-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "midi-Prefix.pch"; sourceTree = "<group>"; };
+		02A92C8C15B9E3870016D3CA /* midi.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = midi.1; sourceTree = "<group>"; };
+		02A92C9315B9E4780016D3CA /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		02A92C9515B9E52B0016D3CA /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		02A92C7E15B9E3870016D3CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02A92C9615B9E52B0016D3CA /* CoreAudio.framework in Frameworks */,
+				02A92C9415B9E4780016D3CA /* CoreMIDI.framework in Frameworks */,
+				02A92C8615B9E3870016D3CA /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		02A92C7615B9E3870016D3CA = {
+			isa = PBXGroup;
+			children = (
+				02A92C9515B9E52B0016D3CA /* CoreAudio.framework */,
+				02A92C9315B9E4780016D3CA /* CoreMIDI.framework */,
+				02A92C8715B9E3870016D3CA /* midi */,
+				02A92C8415B9E3870016D3CA /* Frameworks */,
+				02A92C8215B9E3870016D3CA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		02A92C8215B9E3870016D3CA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				02A92C8115B9E3870016D3CA /* midi */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		02A92C8415B9E3870016D3CA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				02A92C8515B9E3870016D3CA /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		02A92C8715B9E3870016D3CA /* midi */ = {
+			isa = PBXGroup;
+			children = (
+				02A92C8815B9E3870016D3CA /* main.m */,
+				02A92C8C15B9E3870016D3CA /* midi.1 */,
+				02A92C8A15B9E3870016D3CA /* Supporting Files */,
+			);
+			path = midi;
+			sourceTree = "<group>";
+		};
+		02A92C8A15B9E3870016D3CA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				02A92C8B15B9E3870016D3CA /* midi-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		02A92C8015B9E3870016D3CA /* midi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 02A92C9015B9E3870016D3CA /* Build configuration list for PBXNativeTarget "midi" */;
+			buildPhases = (
+				02A92C7D15B9E3870016D3CA /* Sources */,
+				02A92C7E15B9E3870016D3CA /* Frameworks */,
+				02A92C7F15B9E3870016D3CA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = midi;
+			productName = midi;
+			productReference = 02A92C8115B9E3870016D3CA /* midi */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		02A92C7815B9E3870016D3CA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = 02A92C7B15B9E3870016D3CA /* Build configuration list for PBXProject "midi" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 02A92C7615B9E3870016D3CA;
+			productRefGroup = 02A92C8215B9E3870016D3CA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				02A92C8015B9E3870016D3CA /* midi */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		02A92C7D15B9E3870016D3CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02A92C8915B9E3870016D3CA /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		02A92C8E15B9E3870016D3CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		02A92C8F15B9E3870016D3CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		02A92C9115B9E3870016D3CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "midi/midi-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		02A92C9215B9E3870016D3CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "midi/midi-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		02A92C7B15B9E3870016D3CA /* Build configuration list for PBXProject "midi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02A92C8E15B9E3870016D3CA /* Debug */,
+				02A92C8F15B9E3870016D3CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		02A92C9015B9E3870016D3CA /* Build configuration list for PBXNativeTarget "midi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02A92C9115B9E3870016D3CA /* Debug */,
+				02A92C9215B9E3870016D3CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 02A92C7815B9E3870016D3CA /* Project object */;
+}
