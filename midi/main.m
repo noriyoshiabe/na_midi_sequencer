@@ -98,7 +98,7 @@ int main(int argc, const char * argv[])
 				midiData[0] = 0x80 | (c & 0x0F);
 				midiData[2] = 0x00;
 				strncpy(buf, &lineBuf[14], 2);
-				packet = MIDIPacketListAdd(packetListPtr, bufferSize, packet, currentTime + TICK_TIME() * 100/*(UInt64)strtol(buf, NULL, 16)*/, 3, midiData);
+				packet = MIDIPacketListAdd(packetListPtr, bufferSize, packet, currentTime + TICK_TIME() * (UInt64)strtol(buf, NULL, 16), 3, midiData);
 				NSLog(@"NOTE OFF %02X %02X %02X", midiData[0], midiData[1], midiData[2]);
 				
 				err = MIDISend(outPortRef, destPointRef, packetListPtr);
