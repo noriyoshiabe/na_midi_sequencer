@@ -1,10 +1,18 @@
 #!/usr/bin/env ruby
 
+require 'optparse'
+
+#Add base directory to load paths
+$:.unshift File.dirname(__FILE__) + '/base'
 #Add extention directory to load paths
 $:.unshift File.dirname(__FILE__) + '/extention'
 
+require 'play_formatter'
+require 'dump_formatter'
+
 class Context
-	def initialize
+	def initialize(formatter)
+		@formatter = formatter
 		@events = []
 		@velocity = 100
 		@gatetime = 0
@@ -68,7 +76,7 @@ class Context
 		puts '# not overrided play'
 	end
 
-	def build_event_list
+	def event_list
 		table = {}
 		st_count = []; 17.times {|i| st_count[i] = 0 }
 
@@ -85,38 +93,8 @@ class Context
 		table.sort_by{|k, v| k}
 	end
 
-	def dump_event_list
-		build_event_list.each do |st, ar|
-			ar.each do |h|
-				case h[:tp]
-				when 'NT'
-					printf "ST=%d,TP=NT,C=%d,N=%s,G=%d,V=%d\n", st, h[:c], h[:n], h[:g], h[:v]
-				when 'PC'
-					printf "ST=%d,TP=PC,C=%d,M=%d,L=%d,P=%d\n", st, h[:c], h[:m], h[:l], h[:p]
-				when 'TC'
-					printf "ST=%d,TP=TC,T=%f\n", st, h[:t]
-				when 'TB'
-					printf "ST=%d,TP=TB,T=%d\n", st, h[:t]
-				end
-			end
-		end
-	end
-
-	def format
-		build_event_list.each do |st, ar|
-			ar.each do |h|
-				case h[:tp]
-				when 'NT'
-					printf "%08dNT%02X%02X%02X%02X\n", st, h[:c] - 1, convert(h[:n]), h[:g], h[:v]
-				when 'PC'
-					printf "%08dPC%02X%02X%02X%02X\n", st, h[:c] - 1, h[:m], h[:l], h[:p]
-				when 'TC'
-					printf "%08dTCFF%03.2f\n", st, h[:t]
-				when 'TB'
-					printf "%08dTBFF%03d\n", st, h[:t]
-				end
-			end
-		end
+	def output
+		@formatter.format(self)
 	end
 
 	def convert(label)
@@ -140,11 +118,27 @@ class Context
 	}
 end
 
-context = Context.new
+OPTS = {}
+OptionParser.new do |opt|
+	opt.on('-f [output format]') {|v| OPTS[:f] = v}
+	opt.version = '0.1.0'
+	opt.parse!(ARGV)
+end
+
+case OPTS[:f]
+when 'smf'
+	# TODO
+when 'dump'
+	formatter = DumpFormatter.new
+else
+	formatter = PlayFormatter.new
+end
+
+context = Context.new(formatter)
 
 eval(File.open(ARGV[0]).read, context.get_binding)
 
 context.preprocessing
 context.play
-context.format
+context.output
 
