@@ -63,7 +63,6 @@ class Context
 		end
 
 		notes = create_voicing(root_num, definition, voicing_pattern)
-		p notes
 
 		for i in 0..notes.length-1
 			n = notes[i]
