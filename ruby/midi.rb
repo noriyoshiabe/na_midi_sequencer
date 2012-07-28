@@ -6,6 +6,8 @@ require 'optparse'
 $:.unshift File.dirname(__FILE__) + '/base'
 #Add extention directory to load paths
 $:.unshift File.dirname(__FILE__) + '/extention'
+#Add helper directory to load paths
+$:.unshift File.dirname(__FILE__) + '/helper'
 
 require 'play_formatter'
 require 'dump_formatter'
