@@ -16,6 +16,6 @@ def piano_code_play
 	code :rt => 'D#', :sf => 'dim7',                       :vp => 'open_with_bass',  :s => 48, :g => 48, :v => 90
 	code :rt => 'D',  :sf => 'm7',                                                   :s => 48, :g => 48, :v => 90
 	code :rt => 'G',  :sf => '7',    :tn => ['b9', 'b13'], :vp => 'close_with_bass', :s => 48, :g => 48, :v => 90
-	code :rt => 'C',  :sf => 'M7',   :tn => ['9', '#11'],  :vp => 'R20|3153',       :s => 48, :g => 48, :v => 90
+	code :rt => 'C',  :sf => 'M7',   :tn => ['9', '#11'],  :vp => 'R20|3153',        :s => 48, :g => 48, :v => 90
 
 end
