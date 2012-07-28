@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 #Add current directory to load paths
-$:.unshift File.dirname(__FILE__)
+$:.unshift File.dirname(__FILE__) + '/extention'
 
 class Context
 	def initialize
