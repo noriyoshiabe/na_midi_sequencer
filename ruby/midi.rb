@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+#Add current directory to load paths
+$:.unshift File.dirname(__FILE__)
+
 class Context
 	def initialize
 		@events = []
