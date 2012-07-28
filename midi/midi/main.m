@@ -49,11 +49,11 @@ int main(int argc, const char * argv[])
     MIDIPacketList *packetListPtr = (MIDIPacketList *)packetListBuffer;
     MIDIPacket *packet = MIDIPacketListInit(packetListPtr);
 	
-#define TICK_TIME() ((((UInt64)kSecondScale * 6000) / (UInt64)(tempo * 100.0f)) / tickPerBeat)
+#define TICK_TIME() ((((UInt64)kSecondScale * 6000) / (UInt64)(tempo * 100.0f)) / timeBase)
 #define NEXT_TICK_TIME() (startTime + TICK_TIME() * (currentTick + 1))
 
 	float tempo = 120.0f;
-	UInt64 tickPerBeat = 48;
+	UInt64 timeBase = 48;
 	
 	int currentTick = 0;
 	
@@ -138,10 +138,20 @@ int main(int argc, const char * argv[])
 				packet = MIDIPacketListInit(packetListPtr);
 				break;
 			case 'T':
-				buf[6] = '0';
-				strncpy(buf, &lineBuf[12], 6);
-				tempo = strtof(buf, NULL);
-				NSLog(@"TEMPO CHANGE %3.2f", tempo);
+				switch (lineBuf[9]) {
+					case 'C':
+						buf[6] = '\0';
+						strncpy(buf, &lineBuf[12], 6);
+						tempo = strtof(buf, NULL);
+						NSLog(@"TEMPO CHANGE %3.2f", tempo);
+						break;
+					case 'B':
+						buf[3] = '\0';
+						strncpy(buf, &lineBuf[12], 3);
+						timeBase = strtol(buf, NULL, 10);
+						NSLog(@"TIME BASE CHANGE %s %llu", buf, timeBase);
+						break;
+				}
 				break;
 		}
 	}

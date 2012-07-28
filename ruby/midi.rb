@@ -45,6 +45,13 @@ class Context
 		@events << h
 	end
 
+	def time_base(t)
+		raise unless Integer === t
+		raise 'time_base has to be called by preprocessing' unless caller.to_s.index 'preprocessing'
+		raise 'time_base can not be called twice' unless 0 == @events.select{|e| 'TB' == e[:tp]}.size
+		@events.unshift({ :c => 0, :tp => 'TB', :t => t })
+	end
+
 	def step_equalize
 		@events << { :tp => 'SE' }
 	end
@@ -88,6 +95,8 @@ class Context
 					printf "ST=%d,TP=PC,C=%d,M=%d,L=%d,P=%d\n", st, h[:c], h[:m], h[:l], h[:p]
 				when 'TC'
 					printf "ST=%d,TP=TC,T=%f\n", st, h[:t]
+				when 'TB'
+					printf "ST=%d,TP=TB,T=%d\n", st, h[:t]
 				end
 			end
 		end
@@ -103,6 +112,8 @@ class Context
 					printf "%08dPC%02X%02X%02X%02X\n", st, h[:c] - 1, h[:m], h[:l], h[:p]
 				when 'TC'
 					printf "%08dTCFF%03.2f\n", st, h[:t]
+				when 'TB'
+					printf "%08dTBFF%03d\n", st, h[:t]
 				end
 			end
 		end
