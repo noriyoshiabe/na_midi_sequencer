@@ -21,7 +21,7 @@ class Context
 	end
 
 	def note(h)
-		raise if h[:n].nil?
+		raise ":n must not be nil" if h[:n].nil?
 		h[:n] = convert(h[:n]) unless h[:n].kind_of?(Integer)
 
 		h[:c] ||= @channel
