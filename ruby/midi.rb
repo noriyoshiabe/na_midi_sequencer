@@ -98,7 +98,7 @@ class Context
 			ar.each do |h|
 				case h[:tp]
 				when 'NT'
-					printf "%08dNT%02X%02X%02X%02X\n", st, h[:c] - 1, h[:n].to_n, h[:g], h[:v]
+					printf "%08dNT%02X%02X%02X%02X\n", st, h[:c] - 1, convert(h[:n]), h[:g], h[:v]
 				when 'PC'
 					printf "%08dPC%02X%02X%02X%02X\n", st, h[:c] - 1, h[:m], h[:l], h[:p]
 				when 'TC'
@@ -107,10 +107,14 @@ class Context
 			end
 		end
 	end
-end
 
-class String
-	CONVERT_TABLE = {
+	def convert(label)
+		ret = @@convert_table[label]
+		raise "unknown note label " + label if ret.nil?
+		ret
+	end
+
+	@@convert_table = {
 		'C0' => 0, 'C#0' => 1, 'D0' => 2, 'D#0' => 3, 'E0' => 4, 'F0' => 5, 'F#0' => 6, 'G0' => 7, 'G#0' => 8, 'A0' => 9, 'A#0' => 10, 'B0' => 11, 
 		'C1' => 12, 'C#1' => 13, 'D1' => 14, 'D#1' => 15, 'E1' => 16, 'F1' => 17, 'F#1' => 18, 'G1' => 19, 'G#1' => 20, 'A1' => 21, 'A#1' => 22, 'B1' => 23, 
 		'C2' => 24, 'C#2' => 25, 'D2' => 26, 'D#2' => 27, 'E2' => 28, 'F2' => 29, 'F#2' => 30, 'G2' => 31, 'G#2' => 32, 'A2' => 33, 'A#2' => 34, 'B2' => 35, 
@@ -123,10 +127,6 @@ class String
 		'C9' => 108, 'C#9' => 109, 'D9' => 110, 'D#9' => 111, 'E9' => 112, 'F9' => 113, 'F#9' => 114, 'G9' => 115, 'G#9' => 116, 'A9' => 117, 'A#9' => 118, 'B9' => 119, 
 		'C10' => 120, 'C#10' => 121, 'D10' => 122, 'D#10' => 123, 'E10' => 124, 'F10' => 125, 'F#10' => 126, 'G10' => 127
 	}
-
-	def to_n
-		CONVERT_TABLE[self]
-	end
 end
 
 context = Context.new
