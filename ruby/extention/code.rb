@@ -1,3 +1,5 @@
+require 'object_helper'
+
 class Context
 	ROOT_NAME_TABLE = {
 		'C'   => 0, 'C#' => 1, 'D'   => 2, 'D#' => 3, 'E'   => 4, 'F'   => 5, 'F#' => 6, 'G'   => 7, 'G#' => 8, 'A'   => 9, 'A#' => 10, 'B'   => 11, 
@@ -44,24 +46,20 @@ class Context
 	def code(h)
 		raise ":rt must not be nil" if h[:rt].nil?
 
-		root_num = convert h[:rt]
+		root_num        = convert h[:rt]
+		tension_notes   = parse_tention_note(h[:tn])
+		suffix          = h[:sf].self_or_default('M')
+		definition      = SUFFIX_DEFINITIONS[suffix]
+
+		voicing_pattern = h[:vp].self_or_default('open_with_bass')
+		built_in        = BUILT_IN_VOICING_PATTERN_ALIAS[voicing_pattern]
+		voicing_pattern = built_in.nil? ? voicing_pattern : built_in
+		
 		raise ":rt can't be parsed" if root_num.nil?
+		raise ":sf can't be parsed" if definition.nil?
 
-		tension_notes = parse_tention_note(h[:tn])
-
-		suffix = (h[:sf].nil? || h[:sf].empty?) ? 'M' : h[:sf]
-		raise ":sf can't be parsed" if !SUFFIX_DEFINITIONS.has_key?(suffix)
-		definition = SUFFIX_DEFINITIONS[suffix]
 		definition += tension_notes
-
-		voicing_pattern = ''
-		if !h[:vp].nil? && !h[:vp].empty?
-			built_in = BUILT_IN_VOICING_PATTERN_ALIAS[h[:vp]]
-			voicing_pattern = built_in.nil? ? h[:vp] : built_in
-		else
-			voicing_pattern = 'R||0123456'
-		end
-
+		
 		notes = create_voicing(root_num, definition, voicing_pattern)
 
 		for i in 0..notes.length-1
@@ -74,10 +72,10 @@ class Context
 		result = []
 
 		if input.kind_of?(String)
-			tention_num = TENSION_NOTE_ALIAS[input]
-			raise ":tn can't be parsed" if tention_num.nil?
-			result << tention_num
-		elsif input.kind_of?(Array)
+			input = [input]
+		end
+
+		if input.kind_of?(Array)
 			input.each {|s|
 				tention_num = TENSION_NOTE_ALIAS[s]
 				raise ":tn can't be parsed" if tention_num.nil?
