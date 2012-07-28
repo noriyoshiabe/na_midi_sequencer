@@ -72,7 +72,7 @@ class Context
 			end
 		end
 
-		table
+		table.sort_by{|k, v| k}
 	end
 
 	def dump_event_list
