@@ -4,7 +4,7 @@ class PlayFormatter
 			ar.each do |h|
 				case h[:tp]
 				when 'NT'
-					printf "%08dNT%02X%02X%02X%02X\n", st, h[:c] - 1, context.convert(h[:n]), h[:g], h[:v]
+					printf "%08dNT%02X%02X%02X%02X\n", st, h[:c] - 1, h[:n], h[:g], h[:v]
 				when 'PC'
 					printf "%08dPC%02X%02X%02X%02X\n", st, h[:c] - 1, h[:m], h[:l], h[:p]
 				when 'TC'
