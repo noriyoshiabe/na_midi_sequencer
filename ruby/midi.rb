@@ -11,6 +11,7 @@ $:.unshift File.dirname(__FILE__) + '/helper'
 
 require 'play_formatter'
 require 'dump_formatter'
+require 'smf_formatter'
 
 class Context
 	def initialize(formatter)
@@ -80,6 +81,8 @@ class Context
 	end
 
 	def event_list
+		@events.unshift({ :c => 0, :tp => 'TB', :t => 48 }) unless @events.index{|e| 'TB' == e[:tp]}
+
 		table = {}
 		st_count = []; 17.times {|i| st_count[i] = 0 }
 
@@ -124,13 +127,15 @@ end
 OPTS = {}
 OptionParser.new do |opt|
 	opt.on('-f [output format]') {|v| OPTS[:f] = v}
+	opt.on('-t [smf time base]') {|v| OPTS[:t] = v}
 	opt.version = '0.1.0'
 	opt.parse!(ARGV)
 end
 
 case OPTS[:f]
 when 'smf'
-	# TODO
+	time_base = OPTS[:t] ||= 480
+	formatter = SmfFormatter.new(time_base)
 when 'dump'
 	formatter = DumpFormatter.new
 else
