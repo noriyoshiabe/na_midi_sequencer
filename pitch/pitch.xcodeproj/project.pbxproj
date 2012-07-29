@@ -7,18 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0277FB8E15C500C500325FDF /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FB8C15C500C500325FDF /* MainViewController.m */; };
+		0277FB8F15C500C500325FDF /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0277FB8D15C500C500325FDF /* MainViewController.xib */; };
+		0277FB9315C5018600325FDF /* PitchMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FB9215C5018600325FDF /* PitchMonitor.m */; };
+		0277FB9915C5117100325FDF /* TextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FB9815C5117100325FDF /* TextView.m */; };
 		0281F79615C06BC200AA10AF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0281F79515C06BC200AA10AF /* Cocoa.framework */; };
 		0281F7A015C06BC200AA10AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0281F79E15C06BC200AA10AF /* InfoPlist.strings */; };
 		0281F7A215C06BC200AA10AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0281F7A115C06BC200AA10AF /* main.m */; };
 		0281F7A615C06BC200AA10AF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0281F7A415C06BC200AA10AF /* Credits.rtf */; };
 		0281F7A915C06BC200AA10AF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0281F7A815C06BC200AA10AF /* AppDelegate.m */; };
 		0281F7AC15C06BC200AA10AF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0281F7AA15C06BC200AA10AF /* MainMenu.xib */; };
-		0281F7B415C06C3300AA10AF /* MainView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0281F7B315C06C3300AA10AF /* MainView.m */; };
 		0281F7B615C06E1200AA10AF /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0281F7B515C06E1200AA10AF /* CoreAudio.framework */; };
 		0281F7B815C06E1A00AA10AF /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0281F7B715C06E1A00AA10AF /* CoreMIDI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0277FB8B15C500C500325FDF /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		0277FB8C15C500C500325FDF /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		0277FB8D15C500C500325FDF /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		0277FB9115C5018600325FDF /* PitchMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PitchMonitor.h; sourceTree = "<group>"; };
+		0277FB9215C5018600325FDF /* PitchMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PitchMonitor.m; sourceTree = "<group>"; };
+		0277FB9715C5117100325FDF /* TextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextView.h; sourceTree = "<group>"; };
+		0277FB9815C5117100325FDF /* TextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextView.m; sourceTree = "<group>"; };
 		0281F79115C06BC200AA10AF /* pitch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pitch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0281F79515C06BC200AA10AF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		0281F79815C06BC200AA10AF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -32,8 +42,6 @@
 		0281F7A715C06BC200AA10AF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0281F7A815C06BC200AA10AF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		0281F7AB15C06BC200AA10AF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		0281F7B215C06C3300AA10AF /* MainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainView.h; sourceTree = "<group>"; };
-		0281F7B315C06C3300AA10AF /* MainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainView.m; sourceTree = "<group>"; };
 		0281F7B515C06E1200AA10AF /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		0281F7B715C06E1A00AA10AF /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -97,8 +105,13 @@
 				0281F7A815C06BC200AA10AF /* AppDelegate.m */,
 				0281F7AA15C06BC200AA10AF /* MainMenu.xib */,
 				0281F79C15C06BC200AA10AF /* Supporting Files */,
-				0281F7B215C06C3300AA10AF /* MainView.h */,
-				0281F7B315C06C3300AA10AF /* MainView.m */,
+				0277FB8B15C500C500325FDF /* MainViewController.h */,
+				0277FB8C15C500C500325FDF /* MainViewController.m */,
+				0277FB8D15C500C500325FDF /* MainViewController.xib */,
+				0277FB9115C5018600325FDF /* PitchMonitor.h */,
+				0277FB9215C5018600325FDF /* PitchMonitor.m */,
+				0277FB9715C5117100325FDF /* TextView.h */,
+				0277FB9815C5117100325FDF /* TextView.m */,
 			);
 			path = pitch;
 			sourceTree = "<group>";
@@ -168,6 +181,7 @@
 				0281F7A015C06BC200AA10AF /* InfoPlist.strings in Resources */,
 				0281F7A615C06BC200AA10AF /* Credits.rtf in Resources */,
 				0281F7AC15C06BC200AA10AF /* MainMenu.xib in Resources */,
+				0277FB8F15C500C500325FDF /* MainViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,7 +194,9 @@
 			files = (
 				0281F7A215C06BC200AA10AF /* main.m in Sources */,
 				0281F7A915C06BC200AA10AF /* AppDelegate.m in Sources */,
-				0281F7B415C06C3300AA10AF /* MainView.m in Sources */,
+				0277FB8E15C500C500325FDF /* MainViewController.m in Sources */,
+				0277FB9315C5018600325FDF /* PitchMonitor.m in Sources */,
+				0277FB9915C5117100325FDF /* TextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +316,7 @@
 				0281F7B115C06BC200AA10AF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
