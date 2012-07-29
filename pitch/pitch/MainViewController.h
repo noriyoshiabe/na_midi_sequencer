@@ -10,9 +10,14 @@
 #import "PitchMonitor.h"
 #import "TextView.h"
 
-@interface MainViewController : NSViewController<PitchMonitorDelegate>
+@interface MainViewController : NSViewController<PitchMonitorDelegate, NSTextViewDelegate, NSTableViewDelegate, NSTableViewDataSource>
 
 @property (retain) PitchMonitor *pitchMonitor;
 @property (assign) IBOutlet TextView *logOutput;
+@property (assign) IBOutlet NSTableView *listView;
+@property (assign) IBOutlet NSTextField *tempoField;
+@property (assign) IBOutlet NSTextField *timeBaseField;
+@property (assign) IBOutlet NSTextField *quantizeField;
+@property (assign) IBOutlet NSTextField *clickIndicator;
 
 @end

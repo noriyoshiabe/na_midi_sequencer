@@ -11,6 +11,9 @@
 		0277FB8F15C500C500325FDF /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0277FB8D15C500C500325FDF /* MainViewController.xib */; };
 		0277FB9315C5018600325FDF /* PitchMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FB9215C5018600325FDF /* PitchMonitor.m */; };
 		0277FB9915C5117100325FDF /* TextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FB9815C5117100325FDF /* TextView.m */; };
+		0277FB9C15C51FEF00325FDF /* NoteEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FB9B15C51FEF00325FDF /* NoteEvent.m */; };
+		0277FBA715C52F3500325FDF /* MidiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FBA615C52F3500325FDF /* MidiClient.m */; };
+		0277FBB715C5546600325FDF /* TableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0277FBB615C5546600325FDF /* TableView.m */; };
 		0281F79615C06BC200AA10AF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0281F79515C06BC200AA10AF /* Cocoa.framework */; };
 		0281F7A015C06BC200AA10AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0281F79E15C06BC200AA10AF /* InfoPlist.strings */; };
 		0281F7A215C06BC200AA10AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0281F7A115C06BC200AA10AF /* main.m */; };
@@ -29,6 +32,12 @@
 		0277FB9215C5018600325FDF /* PitchMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PitchMonitor.m; sourceTree = "<group>"; };
 		0277FB9715C5117100325FDF /* TextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextView.h; sourceTree = "<group>"; };
 		0277FB9815C5117100325FDF /* TextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextView.m; sourceTree = "<group>"; };
+		0277FB9A15C51FEF00325FDF /* NoteEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteEvent.h; sourceTree = "<group>"; };
+		0277FB9B15C51FEF00325FDF /* NoteEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteEvent.m; sourceTree = "<group>"; };
+		0277FBA515C52F3500325FDF /* MidiClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiClient.h; sourceTree = "<group>"; };
+		0277FBA615C52F3500325FDF /* MidiClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MidiClient.m; sourceTree = "<group>"; };
+		0277FBB515C5546600325FDF /* TableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableView.h; sourceTree = "<group>"; };
+		0277FBB615C5546600325FDF /* TableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableView.m; sourceTree = "<group>"; };
 		0281F79115C06BC200AA10AF /* pitch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pitch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0281F79515C06BC200AA10AF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		0281F79815C06BC200AA10AF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -112,6 +121,12 @@
 				0277FB9215C5018600325FDF /* PitchMonitor.m */,
 				0277FB9715C5117100325FDF /* TextView.h */,
 				0277FB9815C5117100325FDF /* TextView.m */,
+				0277FB9A15C51FEF00325FDF /* NoteEvent.h */,
+				0277FB9B15C51FEF00325FDF /* NoteEvent.m */,
+				0277FBA515C52F3500325FDF /* MidiClient.h */,
+				0277FBA615C52F3500325FDF /* MidiClient.m */,
+				0277FBB515C5546600325FDF /* TableView.h */,
+				0277FBB615C5546600325FDF /* TableView.m */,
 			);
 			path = pitch;
 			sourceTree = "<group>";
@@ -197,6 +212,9 @@
 				0277FB8E15C500C500325FDF /* MainViewController.m in Sources */,
 				0277FB9315C5018600325FDF /* PitchMonitor.m in Sources */,
 				0277FB9915C5117100325FDF /* TextView.m in Sources */,
+				0277FB9C15C51FEF00325FDF /* NoteEvent.m in Sources */,
+				0277FBA715C52F3500325FDF /* MidiClient.m in Sources */,
+				0277FBB715C5546600325FDF /* TableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
