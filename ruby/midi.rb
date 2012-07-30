@@ -24,7 +24,7 @@ class Context
 		@formatter = formatter
 		@events = []
 		@velocity = 100
-		@gatetime = 48
+		@gatetime = 0
 		@channel = 1
 		@step = 0
 		@__events__ = []
