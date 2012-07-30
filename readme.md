@@ -28,7 +28,7 @@
 
 ###楽曲データ作成
 - マニュアル -> (作成中)
-- test.rbを参考に
+- sample/以下を参考に
 
 ###再生
 	ruby midi.rb YourData.rb | ./midi
