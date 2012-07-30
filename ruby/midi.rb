@@ -21,9 +21,17 @@ class Context
 		@gatetime = 0
 		@channel = 1
 		@step = 0
+		@__events__ = []
+		@__st_count__ = []
+		@__stack__ = -1
 	end
 
 	def note(h)
+		note_impl h
+		@events << h
+	end
+
+	def note_impl(h)
 		raise ":n must not be nil" if h[:n].nil?
 		h[:n] = convert(h[:n]) unless h[:n].kind_of?(Integer)
 
@@ -33,8 +41,6 @@ class Context
 		h[:v] ||= @velocity
 
 		h[:tp] = 'NT'
-
-		@events << h
 	end
 
 	def patch_change(h)
@@ -66,6 +72,46 @@ class Context
 
 	def step_equalize
 		@events << { :tp => 'SE' }
+	end
+
+	def play_synchronized(*args)
+		if -1 == @__stack__
+			alias org_note note
+			undef note
+			@__events__ = []
+		end
+		@__stack__ += 1
+		@__st_count__[@__stack__] = 0
+
+		def note(h)
+			note_impl h
+			h[:st_count] = @__st_count__[@__stack__]
+			@__st_count__[@__stack__] += h[:s]
+			@__events__ << h
+		end
+
+		args.each do |arg|
+			@__st_count__[@__stack__] = 0
+			send(arg)
+		end
+
+		@__stack__ -= 1
+		if -1 == @__stack__
+			@__events__.sort_by!{|h| h[:st_count]}
+
+			last_st = nil
+			@__events__.reverse_each do |h|
+				h[:s] = last_st - h[:st_count] unless last_st.nil?
+				last_st = h[:st_count]
+			end
+
+			@__events__.each do |h|
+				org_note h
+			end
+
+			undef note
+			alias note org_note
+		end
 	end
 
 	def get_binding
