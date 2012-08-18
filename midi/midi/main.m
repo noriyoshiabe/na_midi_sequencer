@@ -60,7 +60,7 @@ int main(int argc, const char * argv[])
 	UInt64 startTime = AudioGetCurrentHostTime();
 	UInt64 currentTime;
 	
-	char lineBuf[18+1+1];
+	char lineBuf[20+1+1];
 	Byte midiData[3];
 	
 	// TODO シグナル取って終了させる
@@ -89,15 +89,16 @@ int main(int argc, const char * argv[])
 				midiData[0] = 0x90 | (c & 0x0F);
 				strncpy(buf, &lineBuf[12], 2);
 				midiData[1] = (Byte)strtol(buf, NULL, 16);
-				strncpy(buf, &lineBuf[16], 2);
+				strncpy(buf, &lineBuf[18], 2);
 				midiData[2] = (Byte)strtol(buf, NULL, 16);
 				
 				packet = MIDIPacketListAdd(packetListPtr, bufferSize, packet, currentTime, 3, midiData);
 				NSLog(@"NOTE ON %02X %02X %02X", midiData[0], midiData[1], midiData[2]);
 				
+				buf[4] = '\0';
 				midiData[0] = 0x80 | (c & 0x0F);
 				midiData[2] = 0x00;
-				strncpy(buf, &lineBuf[14], 2);
+				strncpy(buf, &lineBuf[14], 4);
 				packet = MIDIPacketListAdd(packetListPtr, bufferSize, packet, currentTime + TICK_TIME() * (UInt64)strtol(buf, NULL, 16), 3, midiData);
 				NSLog(@"NOTE OFF %02X %02X %02X", midiData[0], midiData[1], midiData[2]);
 				
