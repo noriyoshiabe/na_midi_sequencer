@@ -43,7 +43,7 @@ class Context
 		'open_with_bass'  => 'R||0213465',
 	}
 
-	def code(h)
+	def chord(h)
 		raise ":rt must not be nil" if h[:rt].nil?
 
 		root_num        = convert h[:rt]
