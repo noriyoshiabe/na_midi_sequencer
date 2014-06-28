@@ -28,11 +28,11 @@ class View
   end
 
   def width
-    @window.maxx - 1
+    @window.maxx
   end
 
   def height
-    @window.maxy - 1
+    @window.maxy
   end
 
   def destroy

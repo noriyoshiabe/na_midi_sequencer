@@ -22,7 +22,7 @@ class PianoRollView < View
   end
 
   def render_frame
-    (0..height).each do |j|
+    (0...height).each do |j|
       if 0 == j
         window.setpos(j, 0) 
         window.addstr("CH#{@channel}")
@@ -35,8 +35,8 @@ class PianoRollView < View
   end
 
   def render_keys
-    (0..height).each do |j|
-      window.setpos(height - j, 5)
+    (0...height).each do |j|
+      window.setpos(height - j - 1, 5)
       window.addstr(sprintf("%03d:%s", @offset_note + j, Note::LABELS[@offset_note + j]))
     end
   end
@@ -48,8 +48,8 @@ class PianoRollView < View
     end_step = first_step + @col_step * notes_width
 
     lines = []
-    (0..height).each { |j| lines[j] = ' ' * notes_width }
-    (0..height).each do |j|
+    (0...height).each { |j| lines[j] = ' ' * notes_width }
+    (0...height).each do |j|
       step = first_step
       measure = @offset_measure
       while step <= end_step
@@ -73,8 +73,8 @@ class PianoRollView < View
       end
     end
 
-    (0..height).each do |j|
-      window.setpos(height - j, NOTES_OFFSET_X)
+    (0...height).each do |j|
+      window.setpos(height - j - 1, NOTES_OFFSET_X)
       window.addstr(lines[j])
     end
   end
