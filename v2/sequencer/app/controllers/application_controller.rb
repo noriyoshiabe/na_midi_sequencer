@@ -8,27 +8,33 @@ class ApplicationController
     @status_view = StatusView.new(@app, @screen, height: @screen.height - 4)
     @piano_roll_view = PianoRollView.new(@app, @screen, y: 2, height: @screen.height - 4)
     @command_view = CommandView.new(@app, @screen, y: @screen.height - 2, height: 2)
+
+    @exit = false
+  end
+
+  def running
+    !@exit
   end
 
   def run
-    loop do
+    while running do
       @screen.render
 
-      c = @screen.getch
-      if Key::KEY_CTRL_Q == c
-        break;
-      else
-        s = Key.constants.find{ |name|
-          /^KEY/ =~ name && Key.const_get(name) == c
-        }
-        puts (s ? s.to_s : c.to_s)
-      end
+      key = @screen.getch
+      @app.handle_key_input(key)
     end
 
     self
   end
 
-  def update
+  def update(app, type, event, *args)
+    case type
+    when Application::Event::Type::APP
+      case event
+      when Application::Event::QUIT
+        @exit = true
+      end
+    end
   end
 
   def destroy

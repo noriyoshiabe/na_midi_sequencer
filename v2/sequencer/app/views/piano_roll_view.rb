@@ -79,7 +79,7 @@ class PianoRollView < View
     end
   end
 
-  def update
+  def update(app, type, event, *args)
   end
 end
 

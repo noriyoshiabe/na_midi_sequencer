@@ -8,6 +8,6 @@ class StatusView < View
     super(parent, layout)
   end
 
-  def update
+  def update(app, type, event, *args)
   end
 end

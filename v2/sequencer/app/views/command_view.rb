@@ -15,6 +15,6 @@ class CommandView < View
     window.standend
   end
 
-  def update
+  def update(app, type, event, *args)
   end
 end
