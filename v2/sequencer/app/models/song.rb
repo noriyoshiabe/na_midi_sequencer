@@ -24,12 +24,12 @@ class Song
   end
 
   def time2step(time)
-    m = @measures.select { |m| m.time <= time && time < m.next_time }.first
+    m = @measures.find { |m| m.time <= time && time < m.next_time }
     m ? m.time2step(time) : false
   end
 
   def step2time(step)
-    m = @measures.select { |m| m.step <= step && step < m.next_step }.first
+    m = @measures.find { |m| m.step <= step && step < m.next_step }
     m ? m.step2time(step) : false
   end
 
@@ -38,7 +38,7 @@ class Song
   end
 
   def step2position(step)
-    m = @measures.select { |m| m.step <= step && step < m.next_step }.first
+    m = @measures.find { |m| m.step <= step && step < m.next_step }
     delta = step - m.step
     Position.new(m.index, delta / TIME_BASE, delta % TIME_BASE)
   end
