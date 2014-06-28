@@ -9,6 +9,7 @@ class Screen < View
     Curses.noecho
     Curses.raw
     @window = Curses.stdscr
+    @window.keypad(true)
     @subviews = []
     @visible = true
   end
