@@ -1,0 +1,43 @@
+---
+- !ruby/object:Note
+  step: 0
+  channel: 9
+  noteno: 38
+  velociy: 100
+  gatetime: 460
+- !ruby/object:Note
+  step: 0
+  channel: 9
+  noteno: 44
+  velociy: 100
+  gatetime: 460
+- !ruby/object:Note
+  step: 480
+  channel: 9
+  noteno: 40
+  velociy: 100
+  gatetime: 460
+- !ruby/object:Note
+  step: 480
+  channel: 9
+  noteno: 44
+  velociy: 100
+  gatetime: 120
+- !ruby/object:Note
+  step: 960
+  channel: 9
+  noteno: 44
+  velociy: 100
+  gatetime: 120
+- !ruby/object:Note
+  step: 1440
+  channel: 9
+  noteno: 44
+  velociy: 100
+  gatetime: 120
+- !ruby/object:Note
+  step: 1680
+  channel: 9
+  noteno: 46
+  velociy: 100
+  gatetime: 120
