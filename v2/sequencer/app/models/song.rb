@@ -33,6 +33,16 @@ class Song
     m ? m.step2time(step) : false
   end
 
+  def measure2step(measure_no)
+    @measures[measure_no].step
+  end
+
+  def step2position(step)
+    m = @measures.select { |m| m.step <= step && step < m.next_step }.first
+    delta = step - m.step
+    Position.new(m.index, delta / TIME_BASE, delta % TIME_BASE)
+  end
+
   def set_tempo(index, tempo)
     prev = @measures[index]
     return false unless prev
@@ -86,14 +96,14 @@ class Song
     @notes.delete(note)
   end
 
-  def notes_by_range(from, to, cross = false)
+  def notes_by_range(from, to, channel = nil, cross = false)
     if cross
       @notes.select do |n|
-        from <= n.end_step && n.step < to
+        from <= n.end_step && n.step < to && (channel.nil? || n.channel == channel)
       end
     else
       @notes.select do |n|
-        from <= n.step && n.step < to
+        from <= n.step && n.step < to && (channel.nil? || n.channel == channel)
       end
     end
   end
@@ -150,6 +160,17 @@ class Song
 
     def to_s
       sprintf("index=%d step=%d time=%f numerator=%d denominator=%d tempo=%f next_step=%d next_time=%f", @index, @step, @time, @numerator, @denominator, @tempo, @next_step, @next_time)
+    end
+  end
+
+  class Position
+    attr_accessor :measure
+    attr_accessor :beat
+    attr_accessor :tick
+    def initialize(measure, beat, tick)
+      @measure = measure
+      @beat = beat
+      @tick = tick
     end
   end
 end
