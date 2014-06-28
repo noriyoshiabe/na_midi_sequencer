@@ -1,4 +1,8 @@
+require 'observer'
+
 class Song
+  include Observable
+
   TIME_BASE = 480
   MEASURE_MAX = 100
 

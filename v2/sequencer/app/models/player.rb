@@ -1,4 +1,7 @@
+require 'observer'
+
 class Player
+  include Observable
 
   def play(song, start_step = 0)
     @exit = false
