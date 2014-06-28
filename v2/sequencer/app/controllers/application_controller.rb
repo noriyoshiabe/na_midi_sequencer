@@ -1,5 +1,3 @@
-require 'curses'
-
 class ApplicationController
 
   def initialize(*args)
