@@ -17,13 +17,13 @@ class ApplicationController
       @screen.render
 
       c = @screen.getch
-      if Curses::KEY_CTRL_Q == c
+      if Key::KEY_CTRL_Q == c
         break;
       else
-        case c
-        when ?:
-          @command_view.visible = !@command_view.visible
-        end
+        s = Key.constants.find{ |name|
+          /^KEY/ =~ name && Key.const_get(name) == c
+        }
+        puts (s ? s.to_s : c.to_s)
       end
     end
 
