@@ -78,6 +78,10 @@ class Application
           @app.editor.tie
         when ' '
           @app.editor.rest
+        when ?>
+          @app.editor.octave_shift_up
+        when ?<
+          @app.editor.octave_shift_down
         else
           note_key = Key::NOTE_MAP[key]
           @app.editor.add_note(note_key) if note_key

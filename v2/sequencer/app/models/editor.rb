@@ -11,6 +11,7 @@ class Editor
     REST = 3
     UNDO = 4
     REDO = 5
+    OCTAVE_SHIFT = 6
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -90,6 +91,18 @@ class Editor
   def backkward
     @step -= @quantize
     notify(Event::MOVE)
+  end
+
+  def octave_shift_up
+    return unless 8 > @octave
+    @octave += 1
+    notify(Event::OCTAVE_SHIFT)
+  end
+
+  def octave_shift_down
+    return unless -2 < @octave
+    @octave -= 1
+    notify(Event::OCTAVE_SHIFT)
   end
 
   def add_note(key)
