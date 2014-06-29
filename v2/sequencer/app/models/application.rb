@@ -67,6 +67,10 @@ class Application
           @app.editor.forward
         when Key::KEY_LEFT
           @app.editor.backkward
+        when Key::KEY_CTRL_U
+          @app.editor.undo
+        when Key::KEY_CTRL_R
+          @app.editor.redo
         when ?c
           @app.editor.add_note(9, 40)
         end

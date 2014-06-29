@@ -102,6 +102,7 @@ class Editor
     return if @undo_stack.empty?
     cmd = @undo_stack.pop
     cmd.undo
+    @redo_stack.push(cmd)
     notify(Event::UNDO)
   end
 
@@ -109,6 +110,7 @@ class Editor
     return if @redo_stack.empty?
     cmd = @redo_stack.pop
     cmd.execute
+    @undo_stack.push(cmd)
     notify(Event::REDO)
   end
 
@@ -127,10 +129,10 @@ class Editor
       end
       def execute
         @editor.song.add_note(@note)
-        @editor.step += @editor.quantize
+        @editor.step = @prev_step + @editor.quantize
       end
       def undo
-        @editor.remove_note(@note)
+        @editor.song.remove_note(@note)
         @editor.step = @prev_step
       end
     end
