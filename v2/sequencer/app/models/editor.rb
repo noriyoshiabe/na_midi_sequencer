@@ -7,8 +7,10 @@ class Editor
   module Event
     MOVE = 0
     ADD_NOTE = 1
-    UNDO = 2
-    REDO = 3
+    TIE = 2
+    REST = 3
+    UNDO = 4
+    REDO = 5
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -96,12 +98,25 @@ class Editor
 
     note = Note.new(@step, @channel, noteno, @velocity, @quantize - DECAY_MARGIN)
     execute(Command::AddNote.new(self, note))
+    @added_note = note
     notify(Event::ADD_NOTE)
   end
 
   def calc_noteno(key)
     noteno = (@octave + 2) * 12 + key
     0 <= noteno && noteno <= 127 ? noteno : nil
+  end
+
+  def tie
+    return unless @added_note
+    execute(Command::Tie.new(self, @added_note))
+    notify(Event::TIE)
+  end
+
+  def rest
+    @added_note = nil
+    @step += @quantize
+    notify(Event::REST)
   end
 
   def execute(cmd)
@@ -115,6 +130,7 @@ class Editor
     cmd = @undo_stack.pop
     cmd.undo
     @redo_stack.push(cmd)
+    @added_note = nil
     notify(Event::UNDO)
   end
 
@@ -146,6 +162,26 @@ class Editor
       end
       def undo
         @editor.song.remove_note(@note)
+        @editor.step = @prev_step
+      end
+    end
+
+    class Tie < Base
+      def initialize(editor, note)
+        super(editor)
+        @note = note
+        @quantize = @editor.quantize
+        @prev_step = @editor.step
+        @next_step = @prev_step + @editor.quantize
+      end
+
+      def execute
+        @note.gatetime += @quantize
+        @editor.step = @next_step
+      end
+
+      def undo
+        @note.gatetime -= @quantize
         @editor.step = @prev_step
       end
     end

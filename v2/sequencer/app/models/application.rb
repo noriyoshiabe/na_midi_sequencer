@@ -74,6 +74,10 @@ class Application
           @app.editor.undo
         when Key::KEY_CTRL_R
           @app.editor.redo
+        when Key::KEY_CTRL_I
+          @app.editor.tie
+        when ' '
+          @app.editor.rest
         else
           note_key = Key::NOTE_MAP[key]
           @app.editor.add_note(note_key) if note_key
