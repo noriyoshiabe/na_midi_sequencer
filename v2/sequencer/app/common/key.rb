@@ -183,4 +183,11 @@ module Key
   KEY_CTRL_X    = Curses::KEY_CTRL_X
   KEY_CTRL_Y    = Curses::KEY_CTRL_Y
   KEY_CTRL_Z    = Curses::KEY_CTRL_Z
+
+  def self.name(key)
+    c = constants.find{ |name|
+      /^KEY/ =~ name && const_get(name) == key
+    }
+    c ? c.to_s : key.to_s
+  end
 end

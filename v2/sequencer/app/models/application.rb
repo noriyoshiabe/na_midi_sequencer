@@ -38,6 +38,8 @@ class Application
   end
 
   def handle_key_input(key)
+    Log.debug(Key.name(key))
+    
     case key
     when Key::KEY_CTRL_Q
       notify(Event::Type::APP, Event::QUIT)
