@@ -9,10 +9,11 @@ class CommandView < View
   end
   
   def on_render
-    window.setpos(0, 0)
-    window.standout
-    window.addstr(" " * self.width)
-    window.standend
+    setpos(0, 0)
+    color(Color::WHITE_BLUE)
+    bold
+    addstr(" " * self.width)
+    attroff
   end
 
   def update(app, type, event, *args)

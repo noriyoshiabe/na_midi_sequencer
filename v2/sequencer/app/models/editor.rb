@@ -63,6 +63,7 @@ class Editor
 
   attr_accessor :song
   attr_accessor :step
+  attr_accessor :noteno
   attr_accessor :channel
   attr_accessor :velocity
   attr_accessor :quantize
@@ -70,6 +71,7 @@ class Editor
   def initialize(song)
     @song = song
     @step = 0
+    @noteno = 60
     @channel = 0
     @octave = 3
     @velocity = 100
@@ -89,7 +91,20 @@ class Editor
   end
 
   def backkward
+    return unless @quantize <= @step
     @step -= @quantize
+    notify(Event::MOVE)
+  end
+
+  def up
+    return unless 127 > @noteno
+    @noteno += 1
+    notify(Event::MOVE)
+  end
+
+  def down
+    return unless 0 < @noteno
+    @noteno -= 1
     notify(Event::MOVE)
   end
 
@@ -112,6 +127,7 @@ class Editor
     note = Note.new(@step, @channel, noteno, @velocity, @quantize - DECAY_MARGIN)
     execute(Command::AddNote.new(self, note))
     @added_note = note
+    @noteno = noteno
     notify(Event::ADD_NOTE)
   end
 

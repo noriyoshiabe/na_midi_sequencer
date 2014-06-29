@@ -43,5 +43,40 @@ class View
   def getch
     @window.getch
   end
+
+  module Color
+    WHITE_BLACK = 1
+    WHITE_RED = 2
+    WHITE_BLUE = 3
+  end
+
+  def color(color)
+    @window.attron(Curses.color_pair(color))
+  end
+
+  def bold
+    @window.attron(Curses::A_BOLD)
+  end
+
+  def attroff
+    @window.attroff(Curses::A_COLOR|Curses::A_BOLD|Curses::A_REVERSE)
+  end
+
+  def setpos(*args)
+    @window.setpos(*args)
+  end
+
+  def addstr(*args)
+    @window.addstr(*args)
+  end
+
+  def addch(*args)
+    @window.addch(*args)
+  end
+
+  def inch(*args)
+    @window.inch(*args)
+  end
+
 end
 

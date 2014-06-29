@@ -37,6 +37,8 @@ class Application
     case sender
     when Song
       notify(Event::Type::SONG, event)
+    when Editor
+      notify(Event::Type::EDITOR, event)
     end
   end
 
@@ -70,6 +72,10 @@ class Application
           @app.editor.forward
         when Key::KEY_LEFT
           @app.editor.backkward
+        when Key::KEY_UP
+          @app.editor.up
+        when Key::KEY_DOWN
+          @app.editor.down
         when Key::KEY_CTRL_U
           @app.editor.undo
         when Key::KEY_CTRL_R
