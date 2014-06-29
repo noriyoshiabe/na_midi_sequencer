@@ -107,6 +107,7 @@ class Editor
   def execute(cmd)
     cmd.execute
     @undo_stack.push(cmd)
+    @redo_stack.clear
   end
 
   def undo
@@ -137,10 +138,11 @@ class Editor
         super(editor)
         @note = note
         @prev_step = @editor.step
+        @next_step = @prev_step + @editor.quantize
       end
       def execute
         @editor.song.add_note(@note)
-        @editor.step = @prev_step + @editor.quantize
+        @editor.step = @next_step
       end
       def undo
         @editor.song.remove_note(@note)
