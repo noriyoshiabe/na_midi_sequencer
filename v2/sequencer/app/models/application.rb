@@ -26,20 +26,49 @@ class Application
     @song.add_observer(self)
     @editor.add_observer(self)
     @player.add_observer(self)
+
+    @state = State::Edit.new(self)
   end
 
-  def update
+  def update(sender, event)
+    case sender
+    when Song
+      notify(Event::Type::SONG, event)
+    end
   end
 
   def handle_key_input(key)
     case key
     when Key::KEY_CTRL_Q
       notify(Event::Type::APP, Event::QUIT)
+    else
+      @state.handle_key_input(key)
     end
   end
 
   def notify(type, event)
     changed
     notify_observers(self, type, event)
+  end
+
+  module State
+    class Base
+      def initialize(app)
+        @app = app
+      end
+    end
+
+    class Edit < Base
+      def handle_key_input(key)
+        case key
+        when Key::KEY_RIGHT
+          @app.editor.forward
+        when Key::KEY_LEFT
+          @app.editor.backkward
+        when ?c
+          @app.editor.add_note(9, 40)
+        end
+      end
+    end
   end
 end
