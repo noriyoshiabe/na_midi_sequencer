@@ -96,6 +96,30 @@ class Editor
     notify(Event::MOVE)
   end
 
+  def forward_measure
+    position = @song.step2position(@step)
+    @step = @song.measure2step(position.measure + 1)
+    notify(Event::MOVE)
+  end
+
+  def backkward_measure
+    position = @song.step2position(@step)
+    measure = if 0 == position.beat && 0 == position.tick
+                position.measure - 1
+              else
+                position.measure
+              end
+    return unless 0 < measure
+    @step = @song.measure2step(measure)
+    notify(Event::MOVE)
+  end
+
+  def rewind
+    return unless 0 < @step
+    @step = 0
+    notify(Event::MOVE)
+  end
+
   def up
     return unless 127 > @noteno
     @noteno += 1

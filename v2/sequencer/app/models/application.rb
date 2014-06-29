@@ -72,6 +72,12 @@ class Application
           @app.editor.forward
         when Key::KEY_LEFT
           @app.editor.backkward
+        when Key::KEY_SRIGHT
+          @app.editor.forward_measure
+        when Key::KEY_SLEFT
+          @app.editor.backkward_measure
+        when Key::KEY_CTRL_W
+          @app.editor.rewind
         when Key::KEY_UP
           @app.editor.up
         when Key::KEY_DOWN
