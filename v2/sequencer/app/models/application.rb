@@ -28,6 +28,9 @@ class Application
     @player.add_observer(self)
 
     @state = State::Edit.new(self)
+
+    # TODO
+    @editor.channel = 9
   end
 
   def update(sender, event)
@@ -71,8 +74,9 @@ class Application
           @app.editor.undo
         when Key::KEY_CTRL_R
           @app.editor.redo
-        when ?c
-          @app.editor.add_note(9, 40)
+        else
+          note_key = Key::NOTE_MAP[key]
+          @app.editor.add_note(note_key) if note_key
         end
       end
     end

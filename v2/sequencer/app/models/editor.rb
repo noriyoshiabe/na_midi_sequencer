@@ -60,12 +60,15 @@ class Editor
 
   attr_accessor :song
   attr_accessor :step
+  attr_accessor :channel
   attr_accessor :velocity
   attr_accessor :quantize
 
   def initialize(song)
     @song = song
     @step = 0
+    @channel = 0
+    @octave = 3
     @velocity = 100
     @quantize = QUANTIZE_8
     @undo_stack = []
@@ -87,10 +90,18 @@ class Editor
     notify(Event::MOVE)
   end
 
-  def add_note(channel, noteno)
-    note = Note.new(@step, channel, noteno, @velocity, @quantize - DECAY_MARGIN)
+  def add_note(key)
+    noteno = calc_noteno(key)
+    return unless noteno
+
+    note = Note.new(@step, @channel, noteno, @velocity, @quantize - DECAY_MARGIN)
     execute(Command::AddNote.new(self, note))
     notify(Event::ADD_NOTE)
+  end
+
+  def calc_noteno(key)
+    noteno = (@octave + 2) * 12 + key
+    0 <= noteno && noteno <= 127 ? noteno : nil
   end
 
   def execute(cmd)
