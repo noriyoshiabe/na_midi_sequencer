@@ -4,7 +4,7 @@ class Player
   include Observable
 
   def play(song, start_step = 0)
-    @exit = false
+    @running = true
     start_time = Time.now
     Thread.new do
       run(start_time, song, start_step)
@@ -12,7 +12,11 @@ class Player
   end
 
   def stop
-    @exit = true
+    @running = false
+  end
+
+  def running
+    @running
   end
 
   def run(start_time, song, start_step)
@@ -20,7 +24,7 @@ class Player
 
     offset_time = song.step2time(start_step)
     prev_time = offset_time
-    while !@exit
+    while running
       current_time = (Time.now - start_time) + offset_time
 
       prev_step = song.time2step(prev_time)

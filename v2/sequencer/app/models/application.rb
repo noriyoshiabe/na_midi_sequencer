@@ -88,6 +88,8 @@ class Application
           @app.editor.octave_shift_up
         when ?<
           @app.editor.octave_shift_down
+        when Key::KEY_CTRL_P
+          @app.player.running ? @app.player.stop : @app.player.play(@app.song, @app.editor.step)
         else
           note_key = Key::NOTE_MAP[key]
           @app.editor.add_note(note_key) if note_key
