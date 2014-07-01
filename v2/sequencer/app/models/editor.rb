@@ -92,8 +92,9 @@ class Editor
   end
 
   def backkward
-    return unless @quantize <= @step
+    return if 0 == @step
     @step -= @quantize
+    @step = 0 if 0 > @step
     notify(Event::MOVE)
   end
 

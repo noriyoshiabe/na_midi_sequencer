@@ -21,10 +21,29 @@ class ApplicationController
       @screen.render
 
       key = @screen.getch
-      @app.handle_key_input(key)
+
+      unless handle_key_input(key)
+        @app.handle_key_input(key)
+      end
     end
 
     self
+  end
+
+  def handle_key_input(key)
+      case @app.state
+      when Application::State::Edit
+        case key
+        when ?+
+          @piano_roll_view.zoom_in and return true
+        when ?-
+          @piano_roll_view.zoom_out and return true
+        when ?=
+          @piano_roll_view.zoom_reset and return true
+        end
+      end
+
+      false
   end
 
   def update(app, type, event, *args)

@@ -17,6 +17,7 @@ class Application
   attr_accessor :song
   attr_accessor :editor
   attr_accessor :player
+  attr_accessor :state
 
   def initialize(*args)
     @song = Song.new

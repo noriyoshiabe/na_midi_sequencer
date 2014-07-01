@@ -4,6 +4,14 @@ class PianoRollView < View
 
   NOTES_OFFSET_X = 15
 
+  COL_STEPS = [
+    20,
+    60,
+    120,
+    240,
+    480,
+  ]
+
   def initialize(app, parent, layout = {})
     super(parent, layout)
     @app = app
@@ -71,7 +79,7 @@ class PianoRollView < View
       step = @app.song.measure2step(measure)
       while step <= end_step
         index = (step - @offset_step) / @col_step
-        lines[j][index] = '.'
+        lines[j][index] = '.' if 0 <= index && index < @notes_width
         measure += 1
         step = @app.song.measure2step(measure)
       end
@@ -86,7 +94,7 @@ class PianoRollView < View
       from = (n.step + half - @offset_step) / @col_step
       to = (n.end_step + half - @offset_step) / @col_step
       (from == to ? (from..to) : (from...to)).each do |i|
-        lines[note_index][i] = i == from ? 'x' : '-'
+        lines[note_index][i] = i == from ? 'x' : '-' if 0 <= i && i < @notes_width
       end
     end
 
@@ -110,6 +118,20 @@ class PianoRollView < View
     case type
     when Application::Event::Type::EDITOR
     end
+  end
+
+  def zoom_in
+    return if COL_STEPS.first == @col_step
+    @col_step = COL_STEPS[COL_STEPS.index(@col_step) - 1]
+  end
+
+  def zoom_out
+    return if COL_STEPS.last == @col_step
+    @col_step = COL_STEPS[COL_STEPS.index(@col_step) + 1]
+  end
+
+  def zoom_reset
+    @col_step = 120
   end
 end
 
