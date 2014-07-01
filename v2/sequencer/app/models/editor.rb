@@ -12,6 +12,7 @@ class Editor
     UNDO = 4
     REDO = 5
     OCTAVE_SHIFT = 6
+    QUANTIZE_CHANGE = 7
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -19,10 +20,10 @@ class Editor
   QUANTIZE_16 = Song::TIME_BASE / 4
   QUANTIZE_32 = Song::TIME_BASE / 8
 
-  QUANTIZE_4_3 = Song::TIME_BASE * 2 / 3
-  QUANTIZE_8_3 = Song::TIME_BASE / 3
-  QUANTIZE_16_3 = Song::TIME_BASE / 6
-  QUANTIZE_32_3 = Song::TIME_BASE / 12
+  QUANTIZE_4_3 = Song::TIME_BASE * 4 / 3
+  QUANTIZE_8_3 = Song::TIME_BASE * 2 / 3
+  QUANTIZE_16_3 = Song::TIME_BASE / 3
+  QUANTIZE_32_3 = Song::TIME_BASE / 6
 
   QUANTIZE_4_D = QUANTIZE_4 + QUANTIZE_8
   QUANTIZE_8_D = QUANTIZE_8 + QUANTIZE_16
@@ -109,7 +110,7 @@ class Editor
               else
                 position.measure
               end
-    return unless 0 < measure
+    return unless 0 <= measure
     @step = @song.measure2step(measure)
     notify(Event::MOVE)
   end
@@ -142,6 +143,18 @@ class Editor
     return unless -2 < @octave
     @octave -= 1
     notify(Event::OCTAVE_SHIFT)
+  end
+
+  def quantize_up
+    return if QUANTIZES.first == @quantize
+    @quantize = QUANTIZES[QUANTIZES.index(@quantize) - 1]
+    notify(Event::QUANTIZE_CHANGE)
+  end
+
+  def quantize_down
+    return if QUANTIZES.last == @quantize
+    @quantize = QUANTIZES[QUANTIZES.index(@quantize) + 1]
+    notify(Event::QUANTIZE_CHANGE)
   end
 
   def add_note(key)

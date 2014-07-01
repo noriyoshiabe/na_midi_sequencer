@@ -85,7 +85,7 @@ class PianoRollView < View
       next unless 0 <= note_index && note_index < height
       from = (n.step + half - @offset_step) / @col_step
       to = (n.end_step + half - @offset_step) / @col_step
-      (from...to).each do |i|
+      (from == to ? (from..to) : (from...to)).each do |i|
         lines[note_index][i] = i == from ? 'x' : '-'
       end
     end

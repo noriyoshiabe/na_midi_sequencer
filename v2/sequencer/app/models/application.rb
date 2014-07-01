@@ -94,6 +94,10 @@ class Application
           @app.editor.octave_shift_up
         when ?<
           @app.editor.octave_shift_down
+        when 165
+          @app.editor.quantize_up
+        when 164
+          @app.editor.quantize_down
         when Key::KEY_CTRL_P
           @app.player.running ? @app.player.stop : @app.player.play(@app.song, @app.editor.step)
         else
