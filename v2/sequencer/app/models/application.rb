@@ -29,9 +29,6 @@ class Application
     @player.add_observer(self)
 
     @state = State::Edit.new(self)
-
-    # TODO
-    @editor.channel = 9
   end
 
   def update(sender, event)
@@ -57,6 +54,14 @@ class Application
   def notify(type, event)
     changed
     notify_observers(self, type, event)
+  end
+
+  def set_channel(channel)
+    @editor.set_channel(channel)
+  end
+
+  def set_velocity(velocity)
+    @editor.set_velocity(velocity)
   end
 
   module State

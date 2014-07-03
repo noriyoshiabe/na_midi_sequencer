@@ -8,6 +8,7 @@ class Screen < View
     Curses.cbreak
     Curses.noecho
     Curses.raw
+    Curses.ESCDELAY = 0
     Curses.curs_set(0)
     Curses.start_color
     Curses.init_pair Color::WHITE_BLACK, Curses::COLOR_WHITE, Curses::COLOR_BLACK

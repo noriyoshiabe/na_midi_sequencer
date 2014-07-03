@@ -13,6 +13,8 @@ class Editor
     REDO = 5
     OCTAVE_SHIFT = 6
     QUANTIZE_CHANGE = 7
+    CHANNEL_CHANGE = 8
+    VELOCITY_CHANGE = 9
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -156,6 +158,18 @@ class Editor
     return if QUANTIZES.last == @quantize
     @quantize = QUANTIZES[QUANTIZES.index(@quantize) + 1]
     notify(Event::QUANTIZE_CHANGE)
+  end
+
+  def set_channel(channel)
+    return if @channel == channel
+    @channel = channel
+    notify(Event::CHANNEL_CHANGE)
+  end
+
+  def set_velocity(velocity)
+    return if @velocity == velocity
+    @velocity = velocity
+    notify(Event::VELOCITY_CHANGE)
   end
 
   def add_note(key)

@@ -21,7 +21,7 @@ class PianoRollView < View
     @notes_width = width - NOTES_OFFSET_X
     @offset_step = 0
     @offset_note = 30
-    @channel = 9
+    @channel = 0
   end
   
   def on_render
@@ -132,6 +132,10 @@ class PianoRollView < View
 
   def zoom_reset
     @col_step = 120
+  end
+
+  def change_channel(channel)
+    @channel = channel
   end
 end
 

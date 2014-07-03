@@ -31,6 +31,13 @@ class ApplicationController
   end
 
   def handle_key_input(key)
+    case key
+    when ?:
+      command = @command_view.input_command
+      if command
+        execute_command(command)
+      end
+    else
       case @app.state
       when Application::State::Edit
         case key
@@ -42,8 +49,23 @@ class ApplicationController
           @piano_roll_view.zoom_reset and return true
         end
       end
+    end
 
-      false
+    false
+  end
+
+  def execute_command(line)
+    tokens = line.split
+    return if tokens.empty?
+    case tokens[0]
+    when 'ch'
+      channel = tokens[1].to_i
+      @app.set_channel(channel)
+      @piano_roll_view.change_channel(channel)
+    when 'vel'
+      velocity = tokens[1].to_i
+      @app.set_velocity(velocity)
+    end
   end
 
   def update(app, type, event, *args)

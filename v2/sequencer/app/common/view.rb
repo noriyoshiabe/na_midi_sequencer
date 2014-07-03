@@ -78,5 +78,13 @@ class View
     @window.inch(*args)
   end
 
+  def deleteln
+    @window.deleteln
+  end
+
+  def keypad(*args) 
+    @window.keypad(*args)
+  end
+
 end
 
