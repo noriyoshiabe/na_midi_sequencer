@@ -27,6 +27,14 @@ class View
   def on_render
   end
 
+  def left
+    @window.begx
+  end
+
+  def top
+    @window.begy
+  end
+
   def width
     @window.maxx
   end
