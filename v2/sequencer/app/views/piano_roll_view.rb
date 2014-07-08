@@ -28,7 +28,7 @@ class PianoRollView < View
     @track2 = TrackView.new(app, self, y: TRACK_OFFSET_Y + track_height + 1, height: track_height)
     @track2.channel = 1
 
-    @active_track = @track1
+    @active_track = @track1.activate
 
     @col_step = 120
     @notes_width = width - NOTES_OFFSET_X
@@ -102,6 +102,11 @@ class PianoRollView < View
 
   def change_channel(channel)
     @active_track.channel = channel
+  end
+
+  def switch_track
+    @active_track = @active_track.deactivate == @track1 ? @track2.activate : @track1.activate
+    @active_track.channel
   end
 end
 

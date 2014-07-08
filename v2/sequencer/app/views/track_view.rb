@@ -12,8 +12,9 @@ class TrackView < View
     @app.add_observer(self)
 
     @offset_step = 0
-    @offset_note = 30
+    @offset_note = app.editor.noteno - height + 1
     @channel = 0
+    @active = false
 
     @context = parent
   end
@@ -32,11 +33,10 @@ class TrackView < View
   
   def on_render
     render_frame
+    update_viewport if @active
     render_keys
-
-    update_viewport
     render_notes
-    render_cursor
+    render_cursor if @active
   end
 
   def render_frame
@@ -122,6 +122,16 @@ class TrackView < View
 
   def change_channel(channel)
     @channel = channel
+  end
+
+  def activate
+    @active = true
+    self
+  end
+
+  def deactivate
+    @active = false
+    self
   end
 end
 

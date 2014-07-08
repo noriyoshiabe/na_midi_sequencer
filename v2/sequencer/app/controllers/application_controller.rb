@@ -47,6 +47,8 @@ class ApplicationController
           @piano_roll_view.zoom_out and return true
         when ?=
           @piano_roll_view.zoom_reset and return true
+        when Key::KEY_CTRL_T
+          @app.set_channel(@piano_roll_view.switch_track) and return true
         end
       end
     end
