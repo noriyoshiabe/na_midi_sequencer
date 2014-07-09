@@ -7,14 +7,16 @@ class Editor
   module Event
     MOVE = 0
     ADD_NOTE = 1
-    TIE = 2
-    REST = 3
-    UNDO = 4
-    REDO = 5
-    OCTAVE_SHIFT = 6
-    QUANTIZE_CHANGE = 7
-    CHANNEL_CHANGE = 8
-    VELOCITY_CHANGE = 9
+    REMOVE_NOTE = 2
+    TIE = 3
+    UNTIE = 4
+    REST = 5
+    UNDO = 6
+    REDO = 7
+    OCTAVE_SHIFT = 8
+    QUANTIZE_CHANGE = 9
+    CHANNEL_CHANGE = 10
+    VELOCITY_CHANGE = 11
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -181,7 +183,6 @@ class Editor
 
     note = Note.new(@step, @channel, noteno, @velocity, @quantize - DECAY_MARGIN)
     execute(Command::AddNote.new(self, note))
-    @added_note = note
     @noteno = noteno
     notify(Event::ADD_NOTE)
   end
@@ -192,13 +193,28 @@ class Editor
   end
 
   def tie
-    return unless @added_note
-    execute(Command::Tie.new(self, @added_note))
+    note = @song.notes_by_range(@step - DECAY_MARGIN, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
+    return unless note
+
+    execute(Command::Tie.new(self, note))
     notify(Event::TIE)
   end
 
+  def untie
+    note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, false).find { |n| n.noteno == @noteno }
+    if note
+      execute(Command::RemoveNote.new(self, note))
+      notify(Event::REMOVE_NOTE)
+    else
+      note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
+      if note
+        execute(Command::Untie.new(self, note))
+        notify(Event::UNTIE)
+      end
+    end
+  end
+
   def rest
-    @added_note = nil
     @step += @quantize
     notify(Event::REST)
   end
@@ -214,7 +230,6 @@ class Editor
     cmd = @undo_stack.pop
     cmd.undo
     @redo_stack.push(cmd)
-    @added_note = nil
     notify(Event::UNDO)
   end
 
@@ -258,6 +273,23 @@ class Editor
       end
     end
 
+    class RemoveNote < Base
+      def initialize(editor, note)
+        super(editor)
+        @note = note
+        @prev_step = @editor.step
+        @next_step = [0, @prev_step - @editor.quantize].max
+      end
+      def execute
+        @editor.song.remove_note(@note)
+        @editor.step = @next_step
+      end
+      def undo
+        @editor.song.add_note(@note)
+        @editor.step = @prev_step
+      end
+    end
+
     class Tie < Base
       def initialize(editor, note)
         super(editor)
@@ -274,6 +306,26 @@ class Editor
 
       def undo
         @note.gatetime -= @quantize
+        @editor.step = @prev_step
+      end
+    end
+
+    class Untie < Base
+      def initialize(editor, note)
+        super(editor)
+        @note = note
+        @quantize = @editor.quantize
+        @prev_step = @editor.step
+        @next_step = [0, @prev_step - @editor.quantize].max
+      end
+
+      def execute
+        @note.gatetime -= @quantize
+        @editor.step = @next_step
+      end
+
+      def undo
+        @note.gatetime += @quantize
         @editor.step = @prev_step
       end
     end

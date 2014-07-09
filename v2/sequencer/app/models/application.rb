@@ -94,6 +94,8 @@ class Application
           @app.editor.redo
         when Key::KEY_CTRL_I
           @app.editor.tie
+        when 127
+          @app.editor.untie
         when ' '
           @app.editor.rest
         when ?>
