@@ -70,6 +70,9 @@ class Editor
   attr_accessor :channel
   attr_accessor :velocity
   attr_accessor :quantize
+  attr_accessor :octave
+  attr_accessor :undo_stack
+  attr_accessor :redo_stack
 
   def initialize(song)
     @song = song
@@ -221,6 +224,14 @@ class Editor
     cmd.execute
     @undo_stack.push(cmd)
     notify(Event::REDO)
+  end
+
+  def quantize_label
+    QUANTIZE_LABELS[@quantize]
+  end
+
+  def position
+    @song.step2position(@step)
   end
 
   module Command
