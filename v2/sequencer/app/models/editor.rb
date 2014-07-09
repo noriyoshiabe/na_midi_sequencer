@@ -210,6 +210,8 @@ class Editor
       if note
         execute(Command::Untie.new(self, note))
         notify(Event::UNTIE)
+      else
+        backkward
       end
     end
   end
