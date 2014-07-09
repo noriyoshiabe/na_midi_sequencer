@@ -12,21 +12,23 @@ class StatusView < View
   end
 
   def on_render
+    measure = @app.song.step2measure(@app.editor.step)
+
+    infos = []
+    infos << "channel:#{@app.editor.channel}"
+    infos << "velocity:#{sprintf("%d", @app.editor.velocity)}"
+    infos << "quantize:#{@app.editor.quantize_label}"
+    infos << "octave:#{@app.editor.octave}"
+    infos << "undo:#{0 == @app.editor.undo_stack.size ? '-' : sprintf("%d", @app.editor.undo_stack.size)}"
+    infos << "redo:#{0 == @app.editor.redo_stack.size ? '-' : sprintf("%d", @app.editor.redo_stack.size)}"
+
     setpos(0, 0)
-    addstr("channel:#{@app.editor.channel}")
-    setpos(0, 12)
-    addstr("velocity:#{sprintf("%3d", @app.editor.velocity)}")
-    setpos(0, 26)
-    addstr("quantize:#{@app.editor.quantize_label}")
-    setpos(0, 40)
-    position = @app.editor.position
-    addstr("position:#{sprintf("%03d:%02d:%03d", position.measure, position.beat, position.tick)}")
-    setpos(0, 60)
-    addstr("octave:#{@app.editor.octave}")
-    setpos(0, 70)
-    addstr("undo:#{0 == @app.editor.undo_stack.size ? ' - ' : sprintf("%3d", @app.editor.undo_stack.size)}")
-    setpos(0, 80)
-    addstr("redo:#{0 == @app.editor.redo_stack.size ? ' - ' : sprintf("%3d", @app.editor.redo_stack.size)}")
+    color(Color::WHITE_BLUE)
+    bold
+    addstr(" " * self.width)
+    setpos(0, 0)
+    addstr(infos.join(' ').slice(0...width))
+    attroff
   end
 
 end

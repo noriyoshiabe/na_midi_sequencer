@@ -5,9 +5,9 @@ class ApplicationController
     @app.add_observer(self)
 
     @screen = Screen.new
-    @status_view = StatusView.new(@app, @screen, height: @screen.height - 4)
-    @piano_roll_view = PianoRollView.new(@app, @screen, y: 2, height: @screen.height - 4)
-    @command_view = CommandView.new(@app, @screen, y: @screen.height - 2, height: 2)
+    @piano_roll_view = PianoRollView.new(@app, @screen, y: 0, height: @screen.height - 2)
+    @status_view = StatusView.new(@app, @screen, y: @screen.height - 2, height: 1)
+    @command_view = CommandView.new(@app, @screen, y: @screen.height - 1, height: 1)
 
     @exit = false
   end

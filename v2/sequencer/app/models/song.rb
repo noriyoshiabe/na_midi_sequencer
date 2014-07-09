@@ -37,8 +37,12 @@ class Song
     @measures[measure_no].step
   end
 
+  def step2measure(step)
+    @measures.find { |m| m.step <= step && step < m.next_step }
+  end
+
   def step2position(step)
-    m = @measures.find { |m| m.step <= step && step < m.next_step }
+    m = step2measure(step)
     delta = step - m.step
     Position.new(m.index, delta / TIME_BASE, delta % TIME_BASE)
   end
@@ -106,6 +110,16 @@ class Song
         from <= n.step && n.step < to && (channel.nil? || n.channel == channel)
       end
     end
+  end
+
+  def has_tempo_change(measure_no)
+    0 == measure_no || @measures[measure_no].tempo != @measures[measure_no - 1].tempo
+  end
+
+  def has_beat_change(measure_no)
+    0 == measure_no ||
+      @measures[measure_no].numerator != @measures[measure_no - 1].numerator ||
+      @measures[measure_no].denominator != @measures[measure_no - 1].denominator
   end
 
   class Measure
