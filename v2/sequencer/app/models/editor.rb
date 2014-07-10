@@ -179,12 +179,14 @@ class Editor
 
   def add_note(key)
     noteno = calc_noteno(key)
-    return unless noteno
+    return false unless noteno
 
     note = Note.new(@step, @channel, noteno, @velocity, @quantize - DECAY_MARGIN)
     execute(Command::AddNote.new(self, note))
     @noteno = noteno
     notify(Event::ADD_NOTE)
+
+    note
   end
 
   def calc_noteno(key)

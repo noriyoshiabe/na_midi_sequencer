@@ -110,7 +110,10 @@ class Application
           @app.player.running ? @app.player.stop : @app.player.play(@app.song, @app.editor.step)
         else
           note_key = Key::NOTE_MAP[key]
-          @app.editor.add_note(note_key) if note_key
+          if note_key
+            note = @app.editor.add_note(note_key)
+            @app.player.send_echo(@app.song, note) if note
+          end
         end
       end
     end

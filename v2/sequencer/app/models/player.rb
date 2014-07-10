@@ -3,6 +3,48 @@ require 'observer'
 class Player
   include Observable
 
+  def initialize
+    @echo_queue = []
+    @mutex = Mutex.new
+    @cond_val =  ConditionVariable.new
+
+    Thread.new do
+      echo
+    end
+  end
+
+  def echo
+    echo_off_list = []
+
+    loop do
+      @mutex.synchronize do
+        @cond_val.wait(@mutex) if @echo_queue.empty? && echo_off_list.empty?
+        echo = @echo_queue.shift
+        if echo
+          MidiClient.note_on(echo[:note])
+          echo_off_list.push echo
+        end
+
+        now = Time.now
+        echo_offs = echo_off_list.select { |e| e[:end_time] <= now }
+        echo_offs.each do |e|
+          MidiClient.note_off(e[:note])
+        end
+        
+        echo_off_list -= echo_offs
+      end
+
+      sleep(0.001)
+    end
+  end
+
+  def send_echo(song, note)
+    @mutex.synchronize do
+      @echo_queue.push note: note, end_time: Time.now + (song.step2time(note.step + note.gatetime) - song.step2time(note.step))
+      @cond_val.signal if 1 == @echo_queue.size
+    end
+  end
+
   def play(song, start_step = 0)
     @running = true
     start_time = Time.now
