@@ -21,10 +21,15 @@ class View
     else
       @window.clear
     end
+
+    after_render_child
     @window.refresh
   end
 
   def on_render
+  end
+
+  def after_render_child
   end
 
   def left
@@ -52,10 +57,15 @@ class View
     @window.getch
   end
 
+  def refresh
+    @window.refresh
+  end
+
   module Color
     WHITE_BLACK = 1
     WHITE_RED = 2
     WHITE_BLUE = 3
+    WHITE_GREEN = 4
   end
 
   def color(color)

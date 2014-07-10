@@ -37,6 +37,8 @@ class Application
       notify(Event::Type::SONG, event)
     when Editor
       notify(Event::Type::EDITOR, event)
+    when Player
+      notify(Event::Type::PLAYER, event)
     end
   end
 

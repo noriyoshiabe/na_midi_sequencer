@@ -14,6 +14,7 @@ class Screen < View
     Curses.init_pair Color::WHITE_BLACK, Curses::COLOR_WHITE, Curses::COLOR_BLACK
     Curses.init_pair Color::WHITE_RED,   Curses::COLOR_WHITE, Curses::COLOR_RED
     Curses.init_pair Color::WHITE_BLUE,  Curses::COLOR_WHITE, Curses::COLOR_BLUE
+    Curses.init_pair Color::WHITE_GREEN, Curses::COLOR_WHITE, Curses::COLOR_GREEN
 
     @window = Curses.stdscr
     @window.keypad(true)

@@ -33,6 +33,7 @@ class PianoRollView < View
     @col_step = 120
     @notes_width = width - NOTES_OFFSET_X
     @offset_step = 0
+    @playing_position = 0
   end
   
   def on_render
@@ -40,6 +41,10 @@ class PianoRollView < View
     update_viewport
     render_position
     render_measure
+  end
+
+  def after_render_child
+    render_playing_position
   end
 
   def render_frame
@@ -73,7 +78,7 @@ class PianoRollView < View
     addstr(' ' * 12)
     setpos(1, 0)
     position = @app.editor.position
-    addstr(sprintf("%03d:%02d:%03d", position.measure, position.beat, position.tick))
+    addstr(sprintf("%03d:%02d:%03d", position.measure, position.beat + 1, position.tick))
   end
 
   def render_measure
@@ -119,9 +124,35 @@ class PianoRollView < View
     addstr(line.slice(0...notes_width))
   end
 
+  def render_playing_position
+    return unless @app.player.running
+
+    position = playing_position
+    return unless 0 <= position && position < notes_width
+
+    color(Color::WHITE_GREEN)
+    (0...height).each do |i|
+      setpos(i, NOTES_OFFSET_X + position)
+      bold
+      addch(inch)
+    end
+    attroff
+  end
+
+  def playing_position
+    (@app.player.current_step - offset_step) / col_step
+  end
+
   def update(app, type, event, *args)
     case type
-    when Application::Event::Type::EDITOR
+    when Application::Event::Type::PLAYER
+      case event
+      when Player::Event::PLAYING_POITION
+        if @playing_position != playing_position
+          render
+        end
+        @playing_position = playing_position
+      end
     end
   end
 
