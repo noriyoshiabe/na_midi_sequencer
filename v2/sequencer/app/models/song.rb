@@ -4,23 +4,16 @@ class Song
   include Observable
 
   TIME_BASE = 480
-  MEASURE_MAX = 100
+  INITIAL_MEASURE_NUM = 100
 
   attr_accessor :measures
   attr_accessor :notes
 
   def initialize
-    @measures = []
     @notes = []
     start = 0
-    prev_m = nil
-    MEASURE_MAX.times do |i|
-      step = prev_m ? prev_m.next_step : 0
-      time = prev_m ? prev_m.next_time : 0.0
-      m = Measure.new(i, step, time)
-      @measures << m
-      prev_m = m
-    end
+    @measures = [Measure.new(0, 0, 0.0)]
+    extend_measure(INITIAL_MEASURE_NUM - 1)
   end
 
   def time2step(time)
@@ -33,8 +26,22 @@ class Song
     m ? m.step2time(step) : false
   end
 
+  def measure_at(measure_no)
+    extend_measure(measure_no) if @measures.length <= measure_no
+    @measures[measure_no]
+  end
+
+  def extend_measure(measure_no)
+    last = @measures.last
+    (measure_no - (@measures.length - 1)).times do
+      m = Measure.new(last.index + 1, last.next_step, last.next_time, last.numerator, last.denominator, last.tempo)
+      @measures << m
+      last = m
+    end
+  end
+
   def measure2step(measure_no)
-    @measures[measure_no].step
+    measure_at(measure_no).step
   end
 
   def step2measure(step)
@@ -48,7 +55,7 @@ class Song
   end
 
   def set_tempo(index, tempo)
-    prev = @measures[index]
+    prev = measure_at(index)
     return false unless prev
     prev_tempo = prev.tempo
     @measures[index..-1].each_with_index do |m, i|
@@ -69,7 +76,7 @@ class Song
   end
 
   def set_beat(index, numerator, denominator)
-    prev = @measures[index]
+    prev = measure_at(index)
     return false unless prev
     prev_numerator = prev.numerator
     prev_denominator = prev.denominator
@@ -113,13 +120,13 @@ class Song
   end
 
   def has_tempo_change(measure_no)
-    0 == measure_no || @measures[measure_no].tempo != @measures[measure_no - 1].tempo
+    0 == measure_no || measure_at(measure_no).tempo != measure_at(measure_no - 1).tempo
   end
 
   def has_beat_change(measure_no)
     0 == measure_no ||
-      @measures[measure_no].numerator != @measures[measure_no - 1].numerator ||
-      @measures[measure_no].denominator != @measures[measure_no - 1].denominator
+      measure_at(measure_no).numerator != measure_at(measure_no - 1).numerator ||
+      measure_at(measure_no).denominator != measure_at(measure_no - 1).denominator
   end
 
   class Measure

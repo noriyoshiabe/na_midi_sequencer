@@ -105,7 +105,7 @@ class PianoRollView < View
       has_tempo_change = @app.song.has_tempo_change(measure_no)
       has_beat_change = @app.song.has_beat_change(measure_no)
       if has_tempo_change || has_beat_change
-        measure = @app.song.measures[measure_no]
+        measure = @app.song.measure_at(measure_no)
         str = ''
         str += sprintf("%.2f ", measure.tempo) if has_tempo_change
         str += sprintf("%d/%d", measure.numerator, measure.denominator) if has_beat_change
