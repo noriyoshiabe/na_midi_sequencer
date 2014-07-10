@@ -67,6 +67,14 @@ class ApplicationController
     when 'vel'
       velocity = tokens[1].to_i
       @app.set_velocity(velocity)
+    when 'tempo'
+      index = tokens[1].to_i
+      tempo = tokens[2].to_f
+      @app.song.set_tempo(index, tempo)
+    when 'beat'
+      index = tokens[1].to_i
+      beat = tokens[2].split('/')
+      @app.song.set_beat(index, beat[0].to_i, beat[1].to_i)
     end
   end
 
