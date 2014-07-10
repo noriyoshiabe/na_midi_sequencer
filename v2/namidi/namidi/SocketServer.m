@@ -65,6 +65,8 @@
         } else {
             onRecv(buf, (int)length);
         }
+        
+        close(fd);
     }
     
     return 0;
