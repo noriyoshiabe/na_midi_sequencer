@@ -75,6 +75,13 @@ class ApplicationController
       index = tokens[1].to_i
       beat = tokens[2].split('/')
       @app.song.set_beat(index, beat[0].to_i, beat[1].to_i)
+    when 'cp'
+      from = tokens[1].to_i
+      to = tokens[2].to_i
+      length = tokens[3].to_i
+      channel = tokens[4] ? tokens[4].to_i : nil
+      channel_to = tokens[5] ? tokens[5].to_i : nil
+      @app.editor.copy(from, to, length, channel, channel_to)
     end
   end
 

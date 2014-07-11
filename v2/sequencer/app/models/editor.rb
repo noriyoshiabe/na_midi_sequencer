@@ -17,6 +17,7 @@ class Editor
     QUANTIZE_CHANGE = 9
     CHANNEL_CHANGE = 10
     VELOCITY_CHANGE = 11
+    COPY = 12
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -223,6 +224,11 @@ class Editor
     notify(Event::REST)
   end
 
+  def copy(from, to, length, channel, channel_to)
+    execute(Command::Copy.new(self, from, to, length, channel, channel_to))
+    notify(Event::COPY)
+  end
+
   def execute(cmd)
     cmd.execute
     @undo_stack.push(cmd)
@@ -331,6 +337,34 @@ class Editor
       def undo
         @note.gatetime += @quantize
         @editor.step = @prev_step
+      end
+    end
+
+    class Copy < Base
+      def initialize(editor, from, to, length, channel, channel_to)
+        super(editor)
+        step_from = @editor.song.measure2step(from)
+        step_from_end = @editor.song.measure2step(from + length)
+        step_diff = @editor.song.measure2step(to) - step_from
+        notes = @editor.song.notes_by_range(step_from, step_from_end, channel)
+        @copied = notes.map do |n|
+          copy = n.clone
+          copy.step += step_diff
+          copy.channel = channel_to if channel_to
+          copy
+        end
+      end
+
+      def execute
+        @copied.each do |n|
+          @editor.song.add_note(n)
+        end
+      end
+
+      def undo
+        @copied.each do |n|
+          @editor.song.remove_note(n)
+        end
       end
     end
   end
