@@ -107,6 +107,10 @@ class Song
     @notes.delete(note)
   end
 
+  def notes_from(from, channel = nil, cross = false)
+    notes_by_range(from, Float::INFINITY, channel, cross)
+  end
+
   def notes_by_range(from, to, channel = nil, cross = false)
     if cross
       @notes.select do |n|

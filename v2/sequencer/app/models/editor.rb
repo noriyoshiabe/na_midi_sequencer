@@ -5,7 +5,7 @@ class Editor
   include Observable
 
   module Event
-    MOVE = 0
+    MOVE_POSITION = 0
     ADD_NOTE = 1
     REMOVE_NOTE = 2
     TIE = 3
@@ -18,7 +18,10 @@ class Editor
     CHANNEL_CHANGE = 10
     VELOCITY_CHANGE = 11
     COPY = 12
-    ERASE = 13
+    MOVE = 13
+    ERASE = 14
+    DELETE = 15
+    INSERT = 16
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -97,20 +100,20 @@ class Editor
 
   def forward
     @step += @quantize
-    notify(Event::MOVE)
+    notify(Event::MOVE_POSITION)
   end
 
   def backkward
     return if 0 == @step
     @step -= @quantize
     @step = 0 if 0 > @step
-    notify(Event::MOVE)
+    notify(Event::MOVE_POSITION)
   end
 
   def forward_measure
     position = @song.step2position(@step)
     @step = @song.measure2step(position.measure + 1)
-    notify(Event::MOVE)
+    notify(Event::MOVE_POSITION)
   end
 
   def backkward_measure
@@ -122,25 +125,25 @@ class Editor
               end
     return unless 0 <= measure
     @step = @song.measure2step(measure)
-    notify(Event::MOVE)
+    notify(Event::MOVE_POSITION)
   end
 
   def rewind
     return unless 0 < @step
     @step = 0
-    notify(Event::MOVE)
+    notify(Event::MOVE_POSITION)
   end
 
   def up
     return unless 127 > @noteno
     @noteno += 1
-    notify(Event::MOVE)
+    notify(Event::MOVE_POSITION)
   end
 
   def down
     return unless 0 < @noteno
     @noteno -= 1
-    notify(Event::MOVE)
+    notify(Event::MOVE_POSITION)
   end
 
   def octave_shift_up
@@ -230,9 +233,24 @@ class Editor
     notify(Event::COPY)
   end
 
+  def move(from, to, length, channel, channel_to)
+    execute(Command::Move.new(self, from, to, length, channel, channel_to))
+    notify(Event::MOVE)
+  end
+
   def erase(from, length, channel)
     execute(Command::Erase.new(self, from, length, channel))
     notify(Event::ERASE)
+  end
+
+  def delete(from, length)
+    execute(Command::Delete.new(self, from, length))
+    notify(Event::DELETE)
+  end
+
+  def insert(from, length)
+    execute(Command::Insert.new(self, from, length))
+    notify(Event::INSERT)
   end
 
   def execute(cmd)
@@ -374,6 +392,32 @@ class Editor
       end
     end
 
+    class Move < Base
+      def initialize(editor, from, to, length, channel, channel_to)
+        super(editor)
+        step_from = @editor.song.measure2step(from)
+        step_from_end = @editor.song.measure2step(from + length)
+        @step_moved = @editor.song.measure2step(to) - step_from
+        @moved = @editor.song.notes_by_range(step_from, step_from_end, channel)
+        @channel_from = channel
+        @channel_to = channel_to
+      end
+
+      def execute
+        @moved.each do |n|
+          n.step += @step_moved
+          n.channel = @channel_to if @channel_to
+        end
+      end
+
+      def undo
+        @moved.each do |n|
+          n.step -= @step_moved
+          n.channel = @channel_from if @channel_from
+        end
+      end
+    end
+
     class Erase < Base
       def initialize(editor, from, length, channel)
         super(editor)
@@ -392,6 +436,44 @@ class Editor
         @eraced.each do |n|
           @editor.song.add_note(n)
         end
+      end
+    end
+
+    class Delete < Base
+      def initialize(editor, from, length)
+        super(editor)
+        step_from = @editor.song.measure2step(from)
+        step_from_end = @editor.song.measure2step(from + length)
+        @step_moved = step_from_end - step_from
+        @deleted = @editor.song.notes_by_range(step_from, step_from_end)
+        @moved = @editor.song.notes_from(step_from_end)
+      end
+
+      def execute
+        @deleted.each { |n| @editor.song.remove_note(n) }
+        @moved.each { |n| n.step -= @step_moved }
+      end
+
+      def undo
+        @moved.each { |n| n.step += @step_moved }
+        @deleted.each { |n| @editor.song.add_note(n) }
+      end
+    end
+
+    class Insert < Base
+      def initialize(editor, from, length)
+        super(editor)
+        step_from = @editor.song.measure2step(from)
+        @step_moved = @editor.song.measure2step(from + length) - step_from
+        @moved = @editor.song.notes_from(step_from)
+      end
+
+      def execute
+        @moved.each { |n| n.step += @step_moved }
+      end
+
+      def undo
+        @moved.each { |n| n.step -= @step_moved }
       end
     end
   end
