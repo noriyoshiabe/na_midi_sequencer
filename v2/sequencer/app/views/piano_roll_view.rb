@@ -114,7 +114,7 @@ class PianoRollView < View
         str = ''
         str += sprintf("%.2f ", measure.tempo) if has_tempo_change
         str += sprintf("%d/%d", measure.numerator, measure.denominator) if has_beat_change
-        line[index, index + str.length] = str
+        line[index, str.length] = str
       end
       measure_no += 1
       step = @app.song.measure2step(measure_no)
