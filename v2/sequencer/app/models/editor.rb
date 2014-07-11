@@ -18,6 +18,7 @@ class Editor
     CHANNEL_CHANGE = 10
     VELOCITY_CHANGE = 11
     COPY = 12
+    ERASE = 13
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -229,6 +230,11 @@ class Editor
     notify(Event::COPY)
   end
 
+  def erase(from, length, channel)
+    execute(Command::Erase.new(self, from, length, channel))
+    notify(Event::ERASE)
+  end
+
   def execute(cmd)
     cmd.execute
     @undo_stack.push(cmd)
@@ -364,6 +370,27 @@ class Editor
       def undo
         @copied.each do |n|
           @editor.song.remove_note(n)
+        end
+      end
+    end
+
+    class Erase < Base
+      def initialize(editor, from, length, channel)
+        super(editor)
+        step_from = @editor.song.measure2step(from)
+        step_from_end = @editor.song.measure2step(from + length)
+        @eraced = @editor.song.notes_by_range(step_from, step_from_end, channel)
+      end
+
+      def execute
+        @eraced.each do |n|
+          @editor.song.remove_note(n)
+        end
+      end
+
+      def undo
+        @eraced.each do |n|
+          @editor.song.add_note(n)
         end
       end
     end

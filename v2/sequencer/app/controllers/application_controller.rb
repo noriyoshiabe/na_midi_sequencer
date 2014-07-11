@@ -82,6 +82,11 @@ class ApplicationController
       channel = tokens[4] ? tokens[4].to_i : nil
       channel_to = tokens[5] ? tokens[5].to_i : nil
       @app.editor.copy(from, to, length, channel, channel_to)
+    when 'erase'
+      from = tokens[1].to_i
+      length = tokens[2].to_i
+      channel = tokens[3] ? tokens[3].to_i : nil
+      @app.editor.erase(from, length, channel)
     end
   end
 
