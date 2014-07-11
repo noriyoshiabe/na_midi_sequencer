@@ -70,11 +70,11 @@ class ApplicationController
     when 'tempo'
       index = tokens[1].to_i
       tempo = tokens[2].to_f
-      @app.song.set_tempo(index, tempo)
+      @app.editor.set_tempo(index, tempo)
     when 'beat'
       index = tokens[1].to_i
       beat = tokens[2].split('/')
-      @app.song.set_beat(index, beat[0].to_i, beat[1].to_i)
+      @app.editor.set_beat(index, beat[0].to_i, beat[1].to_i)
     when 'cp'
       from = tokens[1].to_i
       to = tokens[2].to_i

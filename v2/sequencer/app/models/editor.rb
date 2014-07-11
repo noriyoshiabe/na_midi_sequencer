@@ -22,6 +22,8 @@ class Editor
     ERASE = 14
     DELETE = 15
     INSERT = 16
+    TEMPO = 17
+    BEAT = 18
   end
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -251,6 +253,16 @@ class Editor
   def insert(from, length)
     execute(Command::Insert.new(self, from, length))
     notify(Event::INSERT)
+  end
+
+  def set_tempo(index, tempo)
+    execute(Command::Tempo.new(self, index, tempo))
+    notify(Event::TEMPO)
+  end
+
+  def set_beat(index, numerator, denominator)
+    execute(Command::Beat.new(self, index, numerator, denominator))
+    notify(Event::BEAT)
   end
 
   def execute(cmd)
@@ -486,5 +498,44 @@ class Editor
         @editor.song.delete_measure(@from, @length)
       end
     end
+
+    class Tempo < Base
+      def initialize(editor, index, tempo)
+        super(editor)
+        @index = index
+        @tempo = tempo
+        @prev_tempo = @editor.song.measure_at(index).tempo
+      end
+
+      def execute
+        @editor.song.set_tempo(@index, @tempo)
+      end
+
+      def undo
+        @editor.song.set_tempo(@index, @prev_tempo)
+      end
+    end
+
+    class Beat < Base
+      def initialize(editor, index, numerator, denominator)
+        super(editor)
+        @index = index
+        @numerator = numerator
+        @denominator = denominator
+
+        m = @editor.song.measure_at(index)
+        @prev_numerator = m.numerator
+        @prev_denominator = m.denominator
+      end
+
+      def execute
+        @editor.song.set_beat(@index, @numerator, @denominator)
+      end
+
+      def undo
+        @editor.song.set_beat(@index, @prev_numerator, @prev_denominator)
+      end
+    end
+
   end
 end
