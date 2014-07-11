@@ -447,9 +447,12 @@ class Editor
         @step_moved = step_from_end - step_from
         @deleted = @editor.song.notes_by_range(step_from, step_from_end)
         @moved = @editor.song.notes_from(step_from_end)
+        @from = from
+        @length = length
       end
 
       def execute
+        @deleted_measures = @editor.song.delete_measure(@from, @length)
         @deleted.each { |n| @editor.song.remove_note(n) }
         @moved.each { |n| n.step -= @step_moved }
       end
@@ -457,23 +460,30 @@ class Editor
       def undo
         @moved.each { |n| n.step += @step_moved }
         @deleted.each { |n| @editor.song.add_note(n) }
+        @editor.song.insert_measure(@from, @deleted_measures)
       end
     end
 
     class Insert < Base
       def initialize(editor, from, length)
         super(editor)
-        step_from = @editor.song.measure2step(from)
-        @step_moved = @editor.song.measure2step(from + length) - step_from
-        @moved = @editor.song.notes_from(step_from)
+        @from = from
+        @length = length
       end
 
       def execute
+        @editor.song.insert_measure(@from, @length)
+
+        step_from = @editor.song.measure2step(@from)
+        @step_moved = @editor.song.measure2step(@from + @length) - step_from
+
+        @moved = @editor.song.notes_from(step_from)
         @moved.each { |n| n.step += @step_moved }
       end
 
       def undo
         @moved.each { |n| n.step -= @step_moved }
+        @editor.song.delete_measure(@from, @length)
       end
     end
   end

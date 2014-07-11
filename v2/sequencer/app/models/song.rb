@@ -40,6 +40,39 @@ class Song
     end
   end
 
+  def rebuild_measures
+    prev = nil
+    @measures.each_with_index do |m, i|
+      m.index = i
+      m.step = prev ? prev.next_step : 0
+      m.time = prev ? prev.next_time : 0.0
+      m.calc_next
+      prev = m
+    end
+  end
+
+  def delete_measure(from, length)
+    ret = @measures.slice!(from, length)
+    rebuild_measures
+    ret
+  end
+
+  def insert_measure(from, obj)
+    if obj.instance_of? Array
+      obj.reverse.each do |m|
+        @measures.insert(from, m)
+      end
+    elsif obj.instance_of? Fixnum
+      src = @measures[from]
+      obj.times.map do
+        Measure.new(0, 0, 0, src.numerator, src.denominator, src.tempo)
+      end.each do |m|
+        @measures.insert(from, m)
+      end
+    end
+    rebuild_measures
+  end
+
   def measure2step(measure_no)
     measure_at(measure_no).step
   end
