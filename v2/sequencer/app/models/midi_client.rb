@@ -5,7 +5,7 @@ class MidiClient
 
   def self.note_on(note)
     UNIXSocket.open(SOCK_FILE) do |s|
-      s.write([0x90 | note.channel, note.noteno, note.velociy].pack('C*'))
+      s.write([0x90 | note.channel, note.noteno, note.velocity].pack('C*'))
     end
   end
 

@@ -13,6 +13,7 @@ class Application
 
     QUIT = 0
     READ_SONG = 1
+    WRITE_SONG = 2
   end
 
   attr_accessor :song
@@ -38,6 +39,11 @@ class Application
     @editor.song = @song
     @editor.set_default
     notify(Event::Type::APP, Event::READ_SONG)
+  end
+
+  def write_song(filename)
+    SMF.write(@song, filename)
+    notify(Event::Type::APP, Event::WRITE_SONG)
   end
 
   def update(sender, event)

@@ -104,6 +104,8 @@ class ApplicationController
       @app.editor.insert(from, length)
     when 'read'
       @app.read_song(tokens[1])
+    when 'write'
+      @app.write_song(tokens[1])
     end
   end
 

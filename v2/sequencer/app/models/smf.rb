@@ -1,13 +1,18 @@
 class SMF
 
   def self.read(filename)
-    Reader.read(filename)
+    # TODO: should be configurable
+    Reader.read(File.expand_path("~/namidi/#{filename}"))
+  end
+
+  def self.write(song, filename)
+    # TODO: should be configurable
+    Writer.write(song, File.expand_path("~/namidi/#{filename}"))
   end
 
   class Reader
-    def self.read(filename)
-      # TODO: should be configurable
-      Context.new(File.expand_path("~/namidi/#{filename}")).parse
+    def self.read(filepath)
+      Context.new(filepath).parse
     end
 
     class Context
@@ -261,6 +266,163 @@ class SMF
         index = ctx.song.step2measure(ctx.step).index
         ctx.song.set_beat(index, numerator, denominator)
         DeltaTime
+      end
+    end
+  end
+
+  class Writer
+    def self.write(song, filepath)
+      Context.new(song, filepath).write
+    end
+
+    class Context
+      attr_reader :io
+
+      attr_accessor :strategy
+      attr_accessor :song
+
+      attr_accessor :resolution
+      attr_accessor :track_count
+      attr_accessor :track_length
+      attr_accessor :step
+
+      attr_accessor :status
+
+      def initialize(song, filepath)
+        @io = File.open(filepath, 'wb')
+        @song = song
+      end
+
+      def build_tracks
+        @tracks = [meta_track] + note_tracks
+      end
+
+      def meta_track
+        result = []
+        @step = 0
+        @song.measures.each do |m|
+          if @song.has_tempo_change(m.index)
+            result += delta_time(m.step)
+            result += tempo_change(m)
+          end
+          if @song.has_beat_change(m.index)
+            result += delta_time(m.step)
+            result += beat_change(m)
+          end
+          if @song.measures.last == m
+            result += delta_time(m.step)
+            result += [0xFF, 0x2F, 0x00]
+          end
+        end
+        result
+      end
+
+      def note_tracks
+        @song.notes.group_by do |n| n.channel
+        end.sort_by do |k,v|
+          k
+        end.map do |k, v|
+          with_note_off = []
+          v.each do |n|
+            with_note_off << n
+            with_note_off << n.clone.tap do |n|
+              n.step = n.step + n.gatetime
+              n.velocity = 0
+            end
+          end
+
+          with_note_off.sort_by! { |n| [n.step, n.noteno] }
+
+          result = []
+          @step = 0
+          with_note_off.each do |n|
+            result += delta_time(n.step)
+            if 0 < n.velocity
+              result += [0x90 | n.channel, n.noteno, n.velocity]
+            else
+              result += [0x80 | n.channel, n.noteno, 0x00]
+            end
+
+            if with_note_off.last == n
+              result += delta_time(n.step)
+              result += [0xFF, 0x2F, 0x00]
+            end
+          end
+          result
+        end
+      end
+
+      def delta_time(step)
+        delta = step - @step
+        @step = step
+
+        b = []
+
+        if 0x1FFFFF < delta
+          b[0] = (0x80 | (0x000000FF & (delta >> 21)))
+          b[1] = (0x80 | (0x000000FF & (delta >> 14)))
+          b[2] = (0x80 | (0x000000FF & (delta >> 7)))
+          b[3] = ((~0x80) & (0x000000FF & delta))
+        elsif 0x3FFF < delta
+          b[0] = (0x80 | (0x000000FF & (delta >> 14)))
+          b[1] = (0x80 | (0x000000FF & (delta >> 7)))
+          b[2] = ((~0x80) & (0x000000FF & delta))
+        elsif 0x7F < delta
+          b[0] = (0x80 | (0x000000FF & (delta >> 7)))
+          b[1] = ((~0x80) & (0x000000FF & delta))
+        else
+          b[0] = ((~0x80) & (0x000000FF & delta))
+        end
+
+        b
+      end
+
+      def tempo_change(measure)
+        micro = (60000000 / measure.tempo).to_i
+
+        b = []
+        b[0] = (0x000000FF & (micro >> 16));
+        b[1] = (0x000000FF & (micro >> 8));
+        b[2] = (0x000000FF & micro);
+
+        [0xFF, 0x51, 0x03] + b
+      end
+
+      def beat_change(measure)
+        d = measure.denominator
+        denominator = 0
+        while 1 < d do
+          d /= 2
+          denominator += 1
+        end
+
+        b = []
+        b[0] = measure.numerator
+        b[1] = denominator
+
+        [0xFF, 0x58, 0x04] + b + [0x18, 0x08]
+      end
+
+      def write
+        build_tracks
+        write_header
+        @tracks.each do |t|
+          write_track(t)
+        end
+      end
+
+      def write_header
+        @io.write 'MThd'
+        @io.write [6].pack("N")
+        @io.write [1].pack("n")
+        @io.write [@tracks.size].pack("n")
+        @io.write [Song::TIME_BASE].pack("n")
+      end
+
+      def write_track(track)
+        @io.write 'MTrk'
+        @io.write [track.size].pack("N")
+        @io.write track.pack("C*")
       end
     end
 

@@ -2,14 +2,14 @@ class Note
   attr_accessor :step
   attr_accessor :channel
   attr_accessor :noteno
-  attr_accessor :velociy
+  attr_accessor :velocity
   attr_accessor :gatetime
 
-  def initialize(step, channel, noteno, velociy, gatetime)
+  def initialize(step, channel, noteno, velocity, gatetime)
     @step = step
     @channel = channel
     @noteno = noteno
-    @velociy = velociy
+    @velocity = velocity
     @gatetime = gatetime
   end
 
@@ -18,7 +18,7 @@ class Note
   end
 
   def to_s
-    sprintf("step=%d channel=%d noteno=%d velociy=%d gatetime=%d", @step, @channel, @noteno, @velociy, @gatetime)
+    sprintf("step=%d channel=%d noteno=%d velocity=%d gatetime=%d", @step, @channel, @noteno, @velocity, @gatetime)
   end
 
   LABELS = [
