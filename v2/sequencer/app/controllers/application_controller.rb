@@ -35,7 +35,7 @@ class ApplicationController
     when ?:
       command = @command_view.input_command
       if command
-        execute_command(command)
+        execute_command(command) and return true
       end
     else
       case @app.state
@@ -102,6 +102,8 @@ class ApplicationController
       from = tokens[1].to_i
       length = tokens[2].to_i
       @app.editor.insert(from, length)
+    when 'read'
+      @app.read_song(tokens[1])
     end
   end
 

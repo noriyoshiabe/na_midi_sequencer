@@ -78,6 +78,10 @@ class Song
   end
 
   def step2measure(step)
+    while @measures.last.next_step <= step
+      extend_measure(@measures.last.index + 1)
+    end
+
     @measures.find { |m| m.step <= step && step < m.next_step }
   end
 

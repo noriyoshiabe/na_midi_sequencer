@@ -85,6 +85,10 @@ class Editor
 
   def initialize(song)
     @song = song
+    set_default
+  end
+
+  def set_default
     @step = 0
     @noteno = 60
     @channel = 0

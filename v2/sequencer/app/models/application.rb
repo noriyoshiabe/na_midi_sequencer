@@ -12,6 +12,7 @@ class Application
     end
 
     QUIT = 0
+    READ_SONG = 1
   end
 
   attr_accessor :song
@@ -29,6 +30,14 @@ class Application
     @player.add_observer(self)
 
     @state = State::Edit.new(self)
+  end
+
+  def read_song(filename)
+    @song = SMF.read(filename)
+    @song.add_observer(self)
+    @editor.song = @song
+    @editor.set_default
+    notify(Event::Type::APP, Event::READ_SONG)
   end
 
   def update(sender, event)
