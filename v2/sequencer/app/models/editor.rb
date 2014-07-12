@@ -152,6 +152,18 @@ class Editor
     notify(Event::MOVE_POSITION)
   end
 
+  def page_up
+    return unless 127 > @noteno
+    @noteno = [@noteno + 12, 127].min
+    notify(Event::MOVE_POSITION)
+  end
+
+  def page_down
+    return unless 0 < @noteno
+    @noteno = [@noteno - 12, 0].max
+    notify(Event::MOVE_POSITION)
+  end
+
   def octave_shift_up
     return unless 8 > @octave
     @octave += 1

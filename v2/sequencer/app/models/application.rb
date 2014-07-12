@@ -18,6 +18,8 @@ class Application
     :Rewind,
     :Up,
     :Down,
+    :PageUp,
+    :PageDown,
     :Undo,
     :Redo,
     :Tie,
@@ -111,6 +113,10 @@ class Application
       @editor.up
     when Operation::Down
       @editor.down
+    when Operation::PageUp
+      @editor.page_up
+    when Operation::PageDown
+      @editor.page_down
     when Operation::Undo
       @editor.undo
     when Operation::Redo
