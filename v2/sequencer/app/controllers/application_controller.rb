@@ -19,41 +19,72 @@ class ApplicationController
   def run
     while running do
       @screen.render
-
-      key = @screen.getch
-
-      unless handle_key_input(key)
-        @app.handle_key_input(key)
-      end
+      handle_key_input(@screen.getch)
     end
 
     self
   end
 
   def handle_key_input(key)
+    Log.debug(Key.name(key))
+
     case key
+    when Key::KEY_CTRL_Q
+      @app.exit
     when ?:
       command = @command_view.input_command
       if command
-        execute_command(command) and return true
+        execute_command(command)
       end
+    when ?+
+      @piano_roll_view.zoom_in
+    when ?-
+      @piano_roll_view.zoom_out
+    when ?=
+      @piano_roll_view.zoom_reset
+    when Key::KEY_CTRL_T
+      @app.set_channel(@piano_roll_view.switch_track)
+    when Key::KEY_RIGHT
+      @app.editor.forward
+    when Key::KEY_LEFT
+      @app.editor.backkward
+    when Key::KEY_SRIGHT
+      @app.editor.forward_measure
+    when Key::KEY_SLEFT
+      @app.editor.backkward_measure
+    when Key::KEY_CTRL_W
+      @app.editor.rewind
+    when Key::KEY_UP
+      @app.editor.up
+    when Key::KEY_DOWN
+      @app.editor.down
+    when Key::KEY_CTRL_U
+      @app.editor.undo
+    when Key::KEY_CTRL_R
+      @app.editor.redo
+    when Key::KEY_CTRL_I
+      @app.editor.tie
+    when 127
+      @app.editor.untie
+    when ' '
+      @app.editor.rest
+    when ?>
+      @app.editor.octave_shift_up
+    when ?<
+      @app.editor.octave_shift_down
+    when 165
+      @app.editor.quantize_up
+    when 164
+      @app.editor.quantize_down
+    when Key::KEY_CTRL_P
+      @app.player.running ? @app.player.stop : @app.player.play(@app.song, @app.editor.step)
     else
-      case @app.state
-      when Application::State::Edit
-        case key
-        when ?+
-          @piano_roll_view.zoom_in and return true
-        when ?-
-          @piano_roll_view.zoom_out and return true
-        when ?=
-          @piano_roll_view.zoom_reset and return true
-        when Key::KEY_CTRL_T
-          @app.set_channel(@piano_roll_view.switch_track) and return true
-        end
+      note_key = Key::NOTE_MAP[key]
+      if note_key
+        note = @app.editor.add_note(note_key)
+        @app.player.send_echo(@app.song, note) if note
       end
     end
-
-    false
   end
 
   def execute_command(line)
