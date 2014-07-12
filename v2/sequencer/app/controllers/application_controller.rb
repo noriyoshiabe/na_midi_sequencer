@@ -1,4 +1,36 @@
+require 'yaml'
+
 class ApplicationController
+
+  def self.enum(values)
+    Module.new do |mod|
+      values.each_with_index{ |v,i| mod.const_set(v, i) }
+    end
+  end
+
+  Operation = enum [
+    :Command,
+    :ZoomIn,
+    :ZoomOut,
+    :ZoomReset,
+    :SwitchTrack,
+  ]
+
+  class KeyOperation
+    module Type
+      APPLICATION = 0
+      CONTROLLER = 1
+    end
+
+    attr_accessor :type
+    attr_accessor :code
+    attr_accessor :args
+    def initialize(type, code, *args)
+      @type = type
+      @code = code
+      @args = args
+    end
+  end
 
   def initialize(*args)
     @app = Application.new
@@ -10,6 +42,21 @@ class ApplicationController
     @command_view = CommandView.new(@app, @screen, y: @screen.height - 1, height: 1)
 
     @exit = false
+    build_keymap
+  end
+
+  def build_keymap
+    @keymap = {}
+    config = YAML.load_file("#{$root_dir}/config/key_mapping.yml")
+    config.each do |k,v|
+      key = k =~ /^KEY_/ ? Key.const_get(k) : k
+      case v[0]
+      when 'Application'
+        @keymap[key] = KeyOperation.new(KeyOperation::Type::APPLICATION, Application::Operation.const_get(v[1]), v[2])
+      when 'Controller'
+        @keymap[key] = KeyOperation.new(KeyOperation::Type::CONTROLLER, ApplicationController::Operation.const_get(v[1]), v[2])
+      end
+    end
   end
 
   def running
@@ -28,76 +75,45 @@ class ApplicationController
   def handle_key_input(key)
     Log.debug(Key.name(key))
 
-    case key
-    when Key::KEY_CTRL_Q
-      @app.exit
-    when ?:
-      command = @command_view.input_command
-      if command
-        execute_command(command)
-      end
-    when ?+
-      @piano_roll_view.zoom_in
-    when ?-
-      @piano_roll_view.zoom_out
-    when ?=
-      @piano_roll_view.zoom_reset
-    when Key::KEY_CTRL_T
-      @app.set_channel(@piano_roll_view.switch_track)
-    when Key::KEY_RIGHT
-      @app.editor.forward
-    when Key::KEY_LEFT
-      @app.editor.backkward
-    when Key::KEY_SRIGHT
-      @app.editor.forward_measure
-    when Key::KEY_SLEFT
-      @app.editor.backkward_measure
-    when Key::KEY_CTRL_W
-      @app.editor.rewind
-    when Key::KEY_UP
-      @app.editor.up
-    when Key::KEY_DOWN
-      @app.editor.down
-    when Key::KEY_CTRL_U
-      @app.editor.undo
-    when Key::KEY_CTRL_R
-      @app.editor.redo
-    when Key::KEY_CTRL_I
-      @app.editor.tie
-    when 127
-      @app.editor.untie
-    when ' '
-      @app.editor.rest
-    when ?>
-      @app.editor.octave_shift_up
-    when ?<
-      @app.editor.octave_shift_down
-    when 165
-      @app.editor.quantize_up
-    when 164
-      @app.editor.quantize_down
-    when Key::KEY_CTRL_P
-      @app.player.running ? @app.player.stop : @app.player.play(@app.song, @app.editor.step)
-    else
-      note_key = Key::NOTE_MAP[key]
-      if note_key
-        note = @app.editor.add_note(note_key)
-        @app.player.send_echo(@app.song, note) if note
+    operation = @keymap[key]
+    return unless operation
+
+    case operation.type
+    when KeyOperation::Type::APPLICATION
+      @app.execute(operation.code, operation.args[0])
+    when KeyOperation::Type::CONTROLLER
+      case operation.code
+      when Operation::Command
+        command = @command_view.input_command
+        if command
+          execute_command(command)
+        end
+      when Operation::ZoomIn
+        @piano_roll_view.zoom_in
+      when Operation::ZoomOut
+        @piano_roll_view.zoom_out
+      when Operation::ZoomReset
+        @piano_roll_view.zoom_reset
+      when Operation::SwitchTrack
+        channel = @piano_roll_view.switch_track
+        @app.execute(Application::Operation::SetChannel, channel)
       end
     end
   end
 
   def execute_command(line)
+    return unless line
+
     tokens = line.split
     return if tokens.empty?
     case tokens[0]
     when 'ch'
       channel = tokens[1].to_i
-      @app.set_channel(channel)
+      @app.execute(Application::Operation::SetChannel, channel)
       @piano_roll_view.change_channel(channel)
     when 'vel'
       velocity = tokens[1].to_i
-      @app.set_velocity(velocity)
+      @app.execute(Application::Operation::SetVelocity, velocity)
     when 'tempo'
       index = tokens[1].to_i
       tempo = tokens[2].to_f

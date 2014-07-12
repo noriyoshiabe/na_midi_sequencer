@@ -3,6 +3,36 @@ require 'observer'
 class Application
   include Observable
 
+  def self.enum(values)
+    Module.new do |mod|
+      values.each_with_index{ |v,i| mod.const_set(v, i) }
+    end
+  end
+
+  Operation = enum [
+    :Quit,
+    :Forward,
+    :Backward,
+    :ForwardMeasure,
+    :BackwardMeasure,
+    :Rewind,
+    :Up,
+    :Down,
+    :Undo,
+    :Redo,
+    :Tie,
+    :Untie,
+    :Rest,
+    :OctaveUp,
+    :OctaveDown,
+    :QuantizeUp,
+    :QuantizeDown,
+    :TogglePlay,
+    :SetChannel,
+    :SetVelocity,
+    :Note,
+  ]
+
   module Event
     module Type
       APP = 0
@@ -54,7 +84,7 @@ class Application
     end
   end
 
-  def exit
+  def quit
     notify(Event::Type::APP, Event::QUIT)
   end
 
@@ -63,11 +93,51 @@ class Application
     notify_observers(self, type, event)
   end
 
-  def set_channel(channel)
-    @editor.set_channel(channel)
-  end
-
-  def set_velocity(velocity)
-    @editor.set_velocity(velocity)
+  def execute(operation, *args)
+    case operation
+    when Operation::Quit
+      quit
+    when Operation::Forward
+      @editor.forward
+    when Operation::Backward
+      @editor.backkward
+    when Operation::ForwardMeasure
+      @editor.forward_measure
+    when Operation::BackwardMeasure
+      @editor.backkward_measure
+    when Operation::Rewind
+      @editor.rewind
+    when Operation::Up
+      @editor.up
+    when Operation::Down
+      @editor.down
+    when Operation::Undo
+      @editor.undo
+    when Operation::Redo
+      @editor.redo
+    when Operation::Tie
+      @editor.tie
+    when Operation::Untie
+      @editor.untie
+    when Operation::Rest
+      @editor.rest
+    when Operation::OctaveUp
+      @editor.octave_shift_up
+    when Operation::OctaveDown
+      @editor.octave_shift_down
+    when Operation::QuantizeUp
+      @editor.quantize_up
+    when Operation::QuantizeDown
+      @editor.quantize_down
+    when Operation::TogglePlay
+      @player.running ? @player.stop : @player.play(@song, @editor.step)
+    when Operation::SetChannel
+      @editor.set_channel(args[0])
+    when Operation::SetVelocity
+      @editor.set_velocity(args[0])
+    when Operation::Note
+      note = @editor.add_note(args[0])
+      @player.send_echo(@song, note) if note
+    end
   end
 end
