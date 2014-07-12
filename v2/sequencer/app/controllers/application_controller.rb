@@ -162,6 +162,8 @@ class ApplicationController
       case event
       when Application::Event::QUIT
         @exit = true
+      when Application::Event::READ_SONG
+        @piano_roll_view.change_channel(@app.editor.channel)
       end
     end
   end
