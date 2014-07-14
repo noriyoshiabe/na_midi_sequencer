@@ -2,12 +2,6 @@ require 'yaml'
 
 class ApplicationController
 
-  def self.enum(values)
-    Module.new do |mod|
-      values.each_with_index{ |v,i| mod.const_set(v, i) }
-    end
-  end
-
   Operation = enum [
     :Command,
     :ZoomIn,
@@ -17,10 +11,10 @@ class ApplicationController
   ]
 
   class KeyOperation
-    module Type
-      APPLICATION = 0
-      CONTROLLER = 1
-    end
+    Type = enum [
+      :Application,
+      :Controller,
+    ]
 
     attr_accessor :type
     attr_accessor :code
@@ -50,11 +44,11 @@ class ApplicationController
     config = YAML.load_file("#{$root_dir}/config/key_mapping.yml")
     config.each do |k,v|
       key = k =~ /^KEY_/ ? Key.const_get(k) : k
-      case v[0]
-      when 'Application'
-        @keymap[key] = KeyOperation.new(KeyOperation::Type::APPLICATION, Application::Operation.const_get(v[1]), v[2])
-      when 'Controller'
-        @keymap[key] = KeyOperation.new(KeyOperation::Type::CONTROLLER, ApplicationController::Operation.const_get(v[1]), v[2])
+      case KeyOperation::Type.const_get(v[0])
+      when KeyOperation::Type::Application
+        @keymap[key] = KeyOperation.new(KeyOperation::Type::Application, Application::Operation.const_get(v[1]), v[2])
+      when KeyOperation::Type::Controller
+        @keymap[key] = KeyOperation.new(KeyOperation::Type::Controller, ApplicationController::Operation.const_get(v[1]), v[2])
       end
     end
   end
@@ -79,9 +73,9 @@ class ApplicationController
     return unless operation
 
     case operation.type
-    when KeyOperation::Type::APPLICATION
+    when KeyOperation::Type::Application
       @app.execute(operation.code, operation.args[0])
-    when KeyOperation::Type::CONTROLLER
+    when KeyOperation::Type::Controller
       case operation.code
       when Operation::Command
         command = @command_view.input_command
@@ -158,11 +152,11 @@ class ApplicationController
 
   def update(app, type, event, *args)
     case type
-    when Application::Event::Type::APP
+    when Application::Event::Type::App
       case event
-      when Application::Event::QUIT
+      when Application::Event::Quit
         @exit = true
-      when Application::Event::READ_SONG
+      when Application::Event::ReadSong
         @piano_roll_view.change_channel(@app.editor.channel)
       end
     end

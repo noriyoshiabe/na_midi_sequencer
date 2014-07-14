@@ -6,9 +6,9 @@ class Player
   attr_reader :current_time
   attr_reader :current_step
 
-  module Event
-    PLAYING_POITION = 0
-  end
+  Event = enum [
+    :PlayingPoition,
+  ]
 
   def initialize
     @echo_queue = []
@@ -104,7 +104,7 @@ class Player
       note_off_list += notes
 
       prev_time = @current_time
-      notify(Event::PLAYING_POITION) if @current_step != prev_step
+      notify(Event::PlayingPoition) if @current_step != prev_step
 
       sleep(0.001)
     end

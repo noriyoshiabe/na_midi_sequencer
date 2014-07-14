@@ -3,12 +3,6 @@ require 'observer'
 class Application
   include Observable
 
-  def self.enum(values)
-    Module.new do |mod|
-      values.each_with_index{ |v,i| mod.const_set(v, i) }
-    end
-  end
-
   Operation = enum [
     :Quit,
     :Forward,
@@ -35,18 +29,18 @@ class Application
     :Note,
   ]
 
-  module Event
-    module Type
-      APP = 0
-      SONG = 1
-      EDITOR = 2
-      PLAYER = 3
-    end
+  Event = enum [
+    :Quit,
+    :ReadSong,
+    :WriteSong,
+  ]
 
-    QUIT = 0
-    READ_SONG = 1
-    WRITE_SONG = 2
-  end
+  Event::Type = enum [
+    :App,
+    :Song,
+    :Editor,
+    :Player,
+  ]
 
   attr_accessor :song
   attr_accessor :editor
@@ -67,27 +61,27 @@ class Application
     @song.add_observer(self)
     @editor.song = @song
     @editor.set_default
-    notify(Event::Type::APP, Event::READ_SONG)
+    notify(Event::Type::App, Event::ReadSong)
   end
 
   def write_song(filename)
     SMF.write(@song, filename)
-    notify(Event::Type::APP, Event::WRITE_SONG)
+    notify(Event::Type::App, Event::WriteSong)
   end
 
   def update(sender, event)
     case sender
     when Song
-      notify(Event::Type::SONG, event)
+      notify(Event::Type::Song, event)
     when Editor
-      notify(Event::Type::EDITOR, event)
+      notify(Event::Type::Editor, event)
     when Player
-      notify(Event::Type::PLAYER, event)
+      notify(Event::Type::Player, event)
     end
   end
 
   def quit
-    notify(Event::Type::APP, Event::QUIT)
+    notify(Event::Type::App, Event::Quit)
   end
 
   def notify(type, event)

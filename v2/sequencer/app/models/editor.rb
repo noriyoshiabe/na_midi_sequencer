@@ -4,27 +4,27 @@ require 'song'
 class Editor
   include Observable
 
-  module Event
-    MOVE_POSITION = 0
-    ADD_NOTE = 1
-    REMOVE_NOTE = 2
-    TIE = 3
-    UNTIE = 4
-    REST = 5
-    UNDO = 6
-    REDO = 7
-    OCTAVE_SHIFT = 8
-    QUANTIZE_CHANGE = 9
-    CHANNEL_CHANGE = 10
-    VELOCITY_CHANGE = 11
-    COPY = 12
-    MOVE = 13
-    ERASE = 14
-    DELETE = 15
-    INSERT = 16
-    TEMPO = 17
-    BEAT = 18
-  end
+  Event = enum [
+    :MovePosition,
+    :AddNote,
+    :RemoveNote,
+    :Tie,
+    :Untie,
+    :Rest,
+    :Undo,
+    :Redo,
+    :OctaveShift,
+    :QuantizeChange,
+    :ChannelChange,
+    :VelocityChange,
+    :Copy,
+    :Move,
+    :Erase,
+    :Delete,
+    :Insert,
+    :Tempo,
+    :Beat,
+  ]
 
   QUANTIZE_4 = Song::TIME_BASE
   QUANTIZE_8 = Song::TIME_BASE / 2
@@ -106,20 +106,20 @@ class Editor
 
   def forward
     @step += @quantize
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def backkward
     return if 0 == @step
     @step -= @quantize
     @step = 0 if 0 > @step
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def forward_measure
     position = @song.step2position(@step)
     @step = @song.measure2step(position.measure + 1)
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def backkward_measure
@@ -131,73 +131,73 @@ class Editor
               end
     return unless 0 <= measure
     @step = @song.measure2step(measure)
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def rewind
     return unless 0 < @step
     @step = 0
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def up
     return unless 127 > @noteno
     @noteno += 1
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def down
     return unless 0 < @noteno
     @noteno -= 1
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def page_up
     return unless 127 > @noteno
     @noteno = [@noteno + 12, 127].min
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def page_down
     return unless 0 < @noteno
     @noteno = [@noteno - 12, 0].max
-    notify(Event::MOVE_POSITION)
+    notify(Event::MovePosition)
   end
 
   def octave_shift_up
     return unless 8 > @octave
     @octave += 1
-    notify(Event::OCTAVE_SHIFT)
+    notify(Event::OctaveShift)
   end
 
   def octave_shift_down
     return unless -2 < @octave
     @octave -= 1
-    notify(Event::OCTAVE_SHIFT)
+    notify(Event::OctaveShift)
   end
 
   def quantize_up
     return if QUANTIZES.first == @quantize
     @quantize = QUANTIZES[QUANTIZES.index(@quantize) - 1]
-    notify(Event::QUANTIZE_CHANGE)
+    notify(Event::QuantizeChange)
   end
 
   def quantize_down
     return if QUANTIZES.last == @quantize
     @quantize = QUANTIZES[QUANTIZES.index(@quantize) + 1]
-    notify(Event::QUANTIZE_CHANGE)
+    notify(Event::QuantizeChange)
   end
 
   def set_channel(channel)
     return if @channel == channel
     @channel = channel
-    notify(Event::CHANNEL_CHANGE)
+    notify(Event::ChannelChange)
   end
 
   def set_velocity(velocity)
     return if @velocity == velocity
     @velocity = velocity
-    notify(Event::VELOCITY_CHANGE)
+    notify(Event::VelocityChange)
   end
 
   def add_note(key)
@@ -207,7 +207,7 @@ class Editor
     note = Note.new(@step, @channel, noteno, @velocity, @quantize - DECAY_MARGIN)
     execute(Command::AddNote.new(self, note))
     @noteno = noteno
-    notify(Event::ADD_NOTE)
+    notify(Event::AddNote)
 
     note
   end
@@ -222,19 +222,19 @@ class Editor
     return unless note
 
     execute(Command::Tie.new(self, note))
-    notify(Event::TIE)
+    notify(Event::Tie)
   end
 
   def untie
     note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, false).find { |n| n.noteno == @noteno }
     if note
       execute(Command::RemoveNote.new(self, note))
-      notify(Event::REMOVE_NOTE)
+      notify(Event::RemoveNote)
     else
       note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
       if note
         execute(Command::Untie.new(self, note))
-        notify(Event::UNTIE)
+        notify(Event::Untie)
       else
         backkward
       end
@@ -243,42 +243,42 @@ class Editor
 
   def rest
     @step += @quantize
-    notify(Event::REST)
+    notify(Event::Rest)
   end
 
   def copy(from, to, length, channel, channel_to)
     execute(Command::Copy.new(self, from, to, length, channel, channel_to))
-    notify(Event::COPY)
+    notify(Event::Copy)
   end
 
   def move(from, to, length, channel, channel_to)
     execute(Command::Move.new(self, from, to, length, channel, channel_to))
-    notify(Event::MOVE)
+    notify(Event::Move)
   end
 
   def erase(from, length, channel)
     execute(Command::Erase.new(self, from, length, channel))
-    notify(Event::ERASE)
+    notify(Event::Erase)
   end
 
   def delete(from, length)
     execute(Command::Delete.new(self, from, length))
-    notify(Event::DELETE)
+    notify(Event::Delete)
   end
 
   def insert(from, length)
     execute(Command::Insert.new(self, from, length))
-    notify(Event::INSERT)
+    notify(Event::Insert)
   end
 
   def set_tempo(index, tempo)
     execute(Command::Tempo.new(self, index, tempo))
-    notify(Event::TEMPO)
+    notify(Event::Tempo)
   end
 
   def set_beat(index, numerator, denominator)
     execute(Command::Beat.new(self, index, numerator, denominator))
-    notify(Event::BEAT)
+    notify(Event::Beat)
   end
 
   def execute(cmd)
@@ -292,7 +292,7 @@ class Editor
     cmd = @undo_stack.pop
     cmd.undo
     @redo_stack.push(cmd)
-    notify(Event::UNDO)
+    notify(Event::Undo)
   end
 
   def redo
@@ -300,7 +300,7 @@ class Editor
     cmd = @redo_stack.pop
     cmd.execute
     @undo_stack.push(cmd)
-    notify(Event::REDO)
+    notify(Event::Redo)
   end
 
   def quantize_label

@@ -116,7 +116,7 @@ class TrackView < View
 
   def update(app, type, event, *args)
     case type
-    when Application::Event::Type::EDITOR
+    when Application::Event::Type::Editor
     end
   end
 

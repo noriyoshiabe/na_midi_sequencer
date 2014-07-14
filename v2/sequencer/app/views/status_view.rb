@@ -11,9 +11,9 @@ class StatusView < View
 
   def update(app, type, event, *args)
     case type
-    when Application::Event::Type::PLAYER
+    when Application::Event::Type::Player
       case event
-      when Player::Event::PLAYING_POITION
+      when Player::Event::PlayingPoition
         step_divided = @app.player.current_step / 7
         if @step_divided != step_divided
           render
