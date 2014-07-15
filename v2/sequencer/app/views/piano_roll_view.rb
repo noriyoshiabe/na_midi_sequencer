@@ -145,6 +145,16 @@ class PianoRollView < View
 
   def update(app, type, event, *args)
     case type
+    when Application::Event::Type::App
+      case event
+      when Application::Event::ReadSong
+        @active_track.channel = @app.editor.channel
+      end
+    when Application::Event::Type::Editor
+      case event
+      when Editor::Event::ChannelChange
+        @active_track.channel = @app.editor.channel
+      end
     when Application::Event::Type::Player
       case event
       when Player::Event::PlayingPoition
@@ -168,10 +178,6 @@ class PianoRollView < View
 
   def zoom_reset
     @col_step = 120
-  end
-
-  def change_channel(channel)
-    @active_track.channel = channel
   end
 
   def switch_track

@@ -27,6 +27,7 @@ class Application
     :SetChannel,
     :SetVelocity,
     :Note,
+    :ReadSong,
   ]
 
   Event = enum [
@@ -138,6 +139,8 @@ class Application
     when Operation::Note
       note = @editor.add_note(args[0])
       @player.send_echo(@song, note) if note
+    when Operation::ReadSong
+      read_song(args[0])
     end
   end
 end

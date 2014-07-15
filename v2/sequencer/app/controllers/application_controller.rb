@@ -77,11 +77,6 @@ class ApplicationController
       @app.execute(operation.code, operation.args[0])
     when KeyOperation::Type::Controller
       case operation.code
-      when Operation::Command
-        command = @command_view.input_command
-        if command
-          execute_command(command)
-        end
       when Operation::ZoomIn
         @piano_roll_view.zoom_in
       when Operation::ZoomOut
@@ -91,6 +86,11 @@ class ApplicationController
       when Operation::SwitchTrack
         channel = @piano_roll_view.switch_track
         @app.execute(Application::Operation::SetChannel, channel)
+      when Operation::Command
+        command = @command_view.input_command
+        if command
+          @app.execute(command.operation, command.args)
+        end
       end
     end
   end
@@ -101,10 +101,6 @@ class ApplicationController
     tokens = line.split
     return if tokens.empty?
     case tokens[0]
-    when 'ch'
-      channel = tokens[1].to_i
-      @app.execute(Application::Operation::SetChannel, channel)
-      @piano_roll_view.change_channel(channel)
     when 'vel'
       velocity = tokens[1].to_i
       @app.execute(Application::Operation::SetVelocity, velocity)
@@ -156,8 +152,6 @@ class ApplicationController
       case event
       when Application::Event::Quit
         @exit = true
-      when Application::Event::ReadSong
-        @piano_roll_view.change_channel(@app.editor.channel)
       end
     end
   end
