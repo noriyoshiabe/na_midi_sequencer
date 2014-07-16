@@ -224,7 +224,7 @@ class CommandParser
     class FileCommand < Base
       def self.file_list(filename)
         dirpath = File.expand_path(SMF.directory)
-        Dir["#{dirpath}/*"].select do |f|
+        Dir["#{dirpath}/**/*"].select do |f|
           File.file? f
         end.map do |name|
           name.sub("#{dirpath}/", "")
