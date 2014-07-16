@@ -109,11 +109,11 @@ class CommandParser
         @operation = Application::Operation::Copy
         tokens = line.split
         from = tokens[1].to_i
-        to = tokens[2].to_i
-        length = tokens[3].to_i
+        length = tokens[2].to_i
+        to = tokens[3].to_i
         channel = tokens[4] ? tokens[4].to_i : nil
         channel_to = tokens[5] ? tokens[5].to_i : nil
-        @args = [from, to, length, channel, channel_to]
+        @args = [from, length, to, channel, channel_to]
       end
 
       def self.name
@@ -121,7 +121,7 @@ class CommandParser
       end
 
       def self.definition
-        'copy <from> <to> <length> [<channel>] [<channel_to>]'
+        'copy <from> <length> <to> [<channel>] [<channel_to>]'
       end
 
       def self.syntax_error(line)
@@ -134,11 +134,11 @@ class CommandParser
         @operation = Application::Operation::Move
         tokens = line.split
         from = tokens[1].to_i
-        to = tokens[2].to_i
-        length = tokens[3].to_i
+        length = tokens[2].to_i
+        to = tokens[3].to_i
         channel = tokens[4] ? tokens[4].to_i : nil
         channel_to = tokens[5] ? tokens[5].to_i : nil
-        @args = [from, to, length, channel, channel_to]
+        @args = [from, length, to, channel, channel_to]
       end
 
       def self.name
@@ -146,7 +146,7 @@ class CommandParser
       end
 
       def self.definition
-        'move <from> <to> <length> [<channel>] [<channel_to>]'
+        'move <from> <length> <to> [<channel>] [<channel_to>]'
       end
 
       def self.syntax_error(line)

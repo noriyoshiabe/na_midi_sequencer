@@ -246,13 +246,13 @@ class Editor
     notify(Event::Rest)
   end
 
-  def copy(from, to, length, channel, channel_to)
-    execute(Command::Copy.new(self, from, to, length, channel, channel_to))
+  def copy(from, length, to, channel, channel_to)
+    execute(Command::Copy.new(self, from, length, to, channel, channel_to))
     notify(Event::Copy)
   end
 
-  def move(from, to, length, channel, channel_to)
-    execute(Command::Move.new(self, from, to, length, channel, channel_to))
+  def move(from, length, to, channel, channel_to)
+    execute(Command::Move.new(self, from, length, to, channel, channel_to))
     notify(Event::Move)
   end
 
@@ -393,7 +393,7 @@ class Editor
     end
 
     class Copy < Base
-      def initialize(editor, from, to, length, channel, channel_to)
+      def initialize(editor, from, length, to, channel, channel_to)
         super(editor)
         step_from = @editor.song.measure2step(from)
         step_from_end = @editor.song.measure2step(from + length)
@@ -421,7 +421,7 @@ class Editor
     end
 
     class Move < Base
-      def initialize(editor, from, to, length, channel, channel_to)
+      def initialize(editor, from, length, to, channel, channel_to)
         super(editor)
         step_from = @editor.song.measure2step(from)
         step_from_end = @editor.song.measure2step(from + length)
