@@ -92,7 +92,7 @@ class Application
   end
 
   def execute(operation, *args)
-    args = args[0] if args.instance_of? Array
+    args = args[0] if args[0].instance_of? Array
 
     case operation
     when Operation::Quit
