@@ -30,6 +30,7 @@ class Application
     :Tempo,
     :Beat,
     :Read,
+    :Write,
   ]
 
   Event = enum [
@@ -149,6 +150,8 @@ class Application
       @player.send_echo(@song, note) if note
     when Operation::Read
       read_song(args[0])
+    when Operation::Write
+      write_song(args[0])
     end
   end
 end

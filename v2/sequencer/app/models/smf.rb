@@ -10,7 +10,7 @@ class SMF
   end
 
   def self.write(song, filename)
-    Writer.write(song, File.expand_path("#{directory}~/namidi/#{filename}"))
+    Writer.write(song, File.expand_path("#{directory}/#{filename}"))
   end
 
   class Reader

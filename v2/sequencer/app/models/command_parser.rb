@@ -136,12 +136,32 @@ class CommandParser
       end
     end
 
+    class Write < FileCommand
+      def initialize(line)
+        @operation = Application::Operation::Write
+        @args = line.split[1]
+      end
+
+      def self.name
+        'write'
+      end
+
+      def self.definition
+        'write <filename>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^write\s+.*\s*$/
+      end
+    end
+
     COMMANDS = [
       Channel,
       Velocity,
       Tempo,
       Beat,
       Read,
+      Write,
     ]
 
   end
