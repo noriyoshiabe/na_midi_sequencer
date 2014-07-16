@@ -25,7 +25,7 @@ class CommandParser
 
     class Channel < Base
       def initialize(line)
-        @operation = Application::Operation::SetChannel
+        @operation = Application::Operation::Channel
         @args = line.split[1].to_i
       end
 
@@ -44,7 +44,7 @@ class CommandParser
 
     class Velocity < Base
       def initialize(line)
-        @operation = Application::Operation::SetVelocity
+        @operation = Application::Operation::Velocity
         @args = line.split[1].to_i
       end
 
@@ -63,7 +63,7 @@ class CommandParser
 
     class Tempo < Base
       def initialize(line)
-        @operation = Application::Operation::SetTempo
+        @operation = Application::Operation::Tempo
         @args = [line.split[1].to_i, line.split[2].to_f]
       end
 
@@ -82,7 +82,7 @@ class CommandParser
 
     class Read < Base
       def initialize(line)
-        @operation = Application::Operation::ReadSong
+        @operation = Application::Operation::Read
         @args = line.split[1]
       end
 

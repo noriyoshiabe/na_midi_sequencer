@@ -25,10 +25,10 @@ class Application
     :QuantizeDown,
     :TogglePlay,
     :Note,
-    :SetChannel,
-    :SetVelocity,
-    :SetTempo,
-    :ReadSong,
+    :Channel,
+    :Velocity,
+    :Tempo,
+    :Read,
   ]
 
   Event = enum [
@@ -135,16 +135,16 @@ class Application
       @editor.quantize_down
     when Operation::TogglePlay
       @player.running ? @player.stop : @player.play(@song, @editor.step)
-    when Operation::SetChannel
+    when Operation::Channel
       @editor.set_channel(args[0])
-    when Operation::SetVelocity
+    when Operation::Velocity
       @editor.set_velocity(args[0])
-    when Operation::SetTempo
+    when Operation::Tempo
       @editor.set_tempo(args[0], args[1])
     when Operation::Note
       note = @editor.add_note(args[0])
       @player.send_echo(@song, note) if note
-    when Operation::ReadSong
+    when Operation::Read
       read_song(args[0])
     end
   end
