@@ -38,7 +38,7 @@ class CommandParser
       end
 
       def self.syntax_error(line)
-        line !~ /^channel\s+[0-9]{1,2}\s*/
+        line !~ /^channel\s+[0-9]{1,2}\s*$/
       end
     end
 
@@ -57,7 +57,26 @@ class CommandParser
       end
 
       def self.syntax_error(line)
-        line !~ /^velocity\s+[0-9]{1,3}\s*/
+        line !~ /^velocity\s+[0-9]{1,3}\s*$/
+      end
+    end
+
+    class Tempo < Base
+      def initialize(line)
+        @operation = Application::Operation::SetTempo
+        @args = [line.split[1].to_i, line.split[2].to_f]
+      end
+
+      def self.name
+        'tempo'
+      end
+
+      def self.definition
+        'tempo <measure> <tempo>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^tempo\s+[0-9]{1,3}\s+[0-9]{1,3}(\.[0-9]{0,2})?\s*$/
       end
     end
 
@@ -76,13 +95,14 @@ class CommandParser
       end
 
       def self.syntax_error(line)
-        line !~ /^read\s+.*\s*/
+        line !~ /^read\s+.*\s*$/
       end
     end
 
     COMMANDS = [
       Channel,
       Velocity,
+      Tempo,
       Read,
     ]
 

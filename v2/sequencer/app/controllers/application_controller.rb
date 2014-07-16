@@ -101,10 +101,6 @@ class ApplicationController
     tokens = line.split
     return if tokens.empty?
     case tokens[0]
-    when 'tempo'
-      index = tokens[1].to_i
-      tempo = tokens[2].to_f
-      @app.editor.set_tempo(index, tempo)
     when 'beat'
       index = tokens[1].to_i
       beat = tokens[2].split('/')

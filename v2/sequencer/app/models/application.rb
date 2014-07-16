@@ -24,9 +24,10 @@ class Application
     :QuantizeUp,
     :QuantizeDown,
     :TogglePlay,
+    :Note,
     :SetChannel,
     :SetVelocity,
-    :Note,
+    :SetTempo,
     :ReadSong,
   ]
 
@@ -91,6 +92,8 @@ class Application
   end
 
   def execute(operation, *args)
+    args = args[0] if args.instance_of? Array
+
     case operation
     when Operation::Quit
       quit
@@ -136,6 +139,8 @@ class Application
       @editor.set_channel(args[0])
     when Operation::SetVelocity
       @editor.set_velocity(args[0])
+    when Operation::SetTempo
+      @editor.set_tempo(args[0], args[1])
     when Operation::Note
       note = @editor.add_note(args[0])
       @player.send_echo(@song, note) if note
