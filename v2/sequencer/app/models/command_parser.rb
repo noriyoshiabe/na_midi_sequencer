@@ -17,6 +17,8 @@ class CommandParser
       end
       def self.syntax_error(line)
       end
+      def self.file_list(*args)
+      end
 
       def self.command(line)
         new(line)
@@ -102,7 +104,20 @@ class CommandParser
       end
     end
 
-    class Read < Base
+    class FileCommand < Base
+      def self.file_list(filename)
+        dirpath = File.expand_path(SMF.directory)
+        Dir["#{dirpath}/*"].select do |f|
+          File.file? f
+        end.map do |name|
+          name.sub("#{dirpath}/", "")
+        end.select do |name|
+          name.index(/^#{filename}/)
+        end
+      end
+    end
+
+    class Read < FileCommand
       def initialize(line)
         @operation = Application::Operation::Read
         @args = line.split[1]

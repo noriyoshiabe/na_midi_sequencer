@@ -35,7 +35,16 @@ class CommandView < View
       unless error
         candidates = @parser.candidates(command_line)
         unless candidates.empty?
-          popup(candidates.map { |c| ":#{c.definition}" }, 0, -candidates.size) 
+          if 1 == candidates.size && command_line =~ /^#{candidates[0].name}\s+/
+            tokens = command_line.split
+            list = candidates[0].file_list(tokens[1])
+          end
+
+          unless list.nil? || list.empty?
+            popup(list.slice(0, top), candidates[0].name.length + 2, -list.slice(0, top).size) 
+          else
+            popup(candidates.map { |c| ":#{c.definition}" }, 0, -candidates.size) 
+          end
         else
           popup_close
         end
@@ -50,7 +59,16 @@ class CommandView < View
         when 127
           line.chop!
         when Key::KEY_CTRL_I
-          line = ":#{candidates[0].name} " if 1 == candidates.size && 1 == line.split.size
+          if 1 == candidates.size
+            if 1 == line.split.size
+              line = ":#{candidates[0].name} "
+            else
+              file_list = candidates[0].file_list(line.split[1])
+              if 1 == file_list.size
+                line = ":#{candidates[0].name} #{file_list[0]}"
+              end
+            end
+          end
         when Key::KEY_CTRL_J
           if 1 != candidates.size
             popup("The command line is incomplete.", 0, -1, true)

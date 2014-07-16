@@ -107,6 +107,13 @@ class View
     @window.keypad(*args)
   end
 
+  def clear
+    (0...height).each do |j|
+      setpos(j, 0) 
+      addstr(" " * width)
+    end
+  end
+
   def popup(lines, offset_x, offset_y, alert = false)
     lines = [lines] if lines.instance_of? String
 
@@ -115,11 +122,12 @@ class View
     else
       popup_close if @popup
 
-      @popup = @window.subwin(lines.length, lines.map(&:length).max, offset_y, offset_x)
+      width = lines.map(&:length).max
+      @popup = @window.subwin(lines.length, width, offset_y, offset_x)
       @popup.attron(alert ? Curses.color_pair(Color::WHITE_RED) : Curses.color_pair(Color::WHITE_MAGENTA))
       lines.each_with_index do |l, i|
         @popup.setpos(i, 0)
-        @popup.addstr(l)
+        @popup.addstr(sprintf("%-#{width}s", l))
       end
       @popup.attroff(Curses::A_COLOR|Curses::A_BOLD|Curses::A_REVERSE)
       @popup.refresh

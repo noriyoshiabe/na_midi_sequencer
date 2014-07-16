@@ -1,13 +1,16 @@
 class SMF
 
-  def self.read(filename)
+  def self.directory
     # TODO: should be configurable
-    Reader.read(File.expand_path("~/namidi/#{filename}"))
+    "~/namidi"
+  end
+
+  def self.read(filename)
+    Reader.read(File.expand_path("#{directory}/#{filename}"))
   end
 
   def self.write(song, filename)
-    # TODO: should be configurable
-    Writer.write(song, File.expand_path("~/namidi/#{filename}"))
+    Writer.write(song, File.expand_path("#{directory}~/namidi/#{filename}"))
   end
 
   class Reader

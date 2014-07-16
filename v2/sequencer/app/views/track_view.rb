@@ -32,6 +32,8 @@ class TrackView < View
   end
   
   def on_render
+    clear
+
     render_frame
     update_viewport if @active
     render_keys

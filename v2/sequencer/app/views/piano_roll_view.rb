@@ -37,6 +37,8 @@ class PianoRollView < View
   end
   
   def on_render
+    clear
+
     render_frame
     update_viewport
     render_position
