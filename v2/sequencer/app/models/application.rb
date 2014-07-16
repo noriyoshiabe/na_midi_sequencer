@@ -28,6 +28,7 @@ class Application
     :Channel,
     :Velocity,
     :Tempo,
+    :Beat,
     :Read,
   ]
 
@@ -141,6 +142,8 @@ class Application
       @editor.set_velocity(args[0])
     when Operation::Tempo
       @editor.set_tempo(args[0], args[1])
+    when Operation::Beat
+      @editor.set_beat(args[0], args[1], args[2])
     when Operation::Note
       note = @editor.add_note(args[0])
       @player.send_echo(@song, note) if note

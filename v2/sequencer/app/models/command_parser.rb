@@ -80,6 +80,28 @@ class CommandParser
       end
     end
 
+    class Beat < Base
+      def initialize(line)
+        @operation = Application::Operation::Beat
+        tokens = line.split
+        index = tokens[1].to_i
+        beat = tokens[2].split('/')
+        @args = [index, beat[0].to_i, beat[1].to_i]
+      end
+
+      def self.name
+        'beat'
+      end
+
+      def self.definition
+        'beat <measure> <N/N>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^beat\s+[0-9]{1,3}\s+[0-9]{1,2}\/[0-9]{1,2}\s*$/
+      end
+    end
+
     class Read < Base
       def initialize(line)
         @operation = Application::Operation::Read
@@ -103,6 +125,7 @@ class CommandParser
       Channel,
       Velocity,
       Tempo,
+      Beat,
       Read,
     ]
 
