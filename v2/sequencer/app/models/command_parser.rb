@@ -42,6 +42,25 @@ class CommandParser
       end
     end
 
+    class Velocity < Base
+      def initialize(line)
+        @operation = Application::Operation::SetVelocity
+        @args = line.split[1].to_i
+      end
+
+      def self.name
+        'velocity'
+      end
+
+      def self.definition
+        'velocity <velocity>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^velocity\s+[0-9]{1,3}\s*/
+      end
+    end
+
     class Read < Base
       def initialize(line)
         @operation = Application::Operation::ReadSong
@@ -63,6 +82,7 @@ class CommandParser
 
     COMMANDS = [
       Channel,
+      Velocity,
       Read,
     ]
 

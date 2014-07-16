@@ -101,9 +101,6 @@ class ApplicationController
     tokens = line.split
     return if tokens.empty?
     case tokens[0]
-    when 'vel'
-      velocity = tokens[1].to_i
-      @app.execute(Application::Operation::SetVelocity, velocity)
     when 'tempo'
       index = tokens[1].to_i
       tempo = tokens[2].to_f
