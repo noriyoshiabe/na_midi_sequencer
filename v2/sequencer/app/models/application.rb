@@ -29,6 +29,11 @@ class Application
     :Velocity,
     :Tempo,
     :Beat,
+    :Copy,
+    :Move,
+    :Erase,
+    :Delete,
+    :Insert,
     :Read,
     :Write,
   ]
@@ -145,6 +150,16 @@ class Application
       @editor.set_tempo(args[0], args[1])
     when Operation::Beat
       @editor.set_beat(args[0], args[1], args[2])
+    when Operation::Copy
+      @editor.copy(args[0], args[1], args[2], args[3], args[4])
+    when Operation::Move
+      @editor.move(args[0], args[1], args[2], args[3], args[4])
+    when Operation::Erase
+      @editor.erase(args[0], args[1], args[2])
+    when Operation::Delete
+      @editor.delete(args[0], args[1])
+    when Operation::Insert
+      @editor.insert(args[0], args[1])
     when Operation::Note
       note = @editor.add_note(args[0])
       @player.send_echo(@song, note) if note

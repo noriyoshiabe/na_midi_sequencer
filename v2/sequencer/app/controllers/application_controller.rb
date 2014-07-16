@@ -95,42 +95,6 @@ class ApplicationController
     end
   end
 
-  def execute_command(line)
-    return unless line
-
-    tokens = line.split
-    return if tokens.empty?
-    case tokens[0]
-    when 'cp'
-      from = tokens[1].to_i
-      to = tokens[2].to_i
-      length = tokens[3].to_i
-      channel = tokens[4] ? tokens[4].to_i : nil
-      channel_to = tokens[5] ? tokens[5].to_i : nil
-      @app.editor.copy(from, to, length, channel, channel_to)
-    when 'mv'
-      from = tokens[1].to_i
-      to = tokens[2].to_i
-      length = tokens[3].to_i
-      channel = tokens[4] ? tokens[4].to_i : nil
-      channel_to = tokens[5] ? tokens[5].to_i : nil
-      @app.editor.move(from, to, length, channel, channel_to)
-    when 'erase'
-      from = tokens[1].to_i
-      length = tokens[2].to_i
-      channel = tokens[3] ? tokens[3].to_i : nil
-      @app.editor.erase(from, length, channel)
-    when 'delete'
-      from = tokens[1].to_i
-      length = tokens[2].to_i
-      @app.editor.delete(from, length)
-    when 'insert'
-      from = tokens[1].to_i
-      length = tokens[2].to_i
-      @app.editor.insert(from, length)
-    end
-  end
-
   def update(app, type, event, *args)
     case type
     when Application::Event::Type::App

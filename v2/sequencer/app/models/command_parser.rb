@@ -104,6 +104,123 @@ class CommandParser
       end
     end
 
+    class Copy < Base
+      def initialize(line)
+        @operation = Application::Operation::Copy
+        tokens = line.split
+        from = tokens[1].to_i
+        to = tokens[2].to_i
+        length = tokens[3].to_i
+        channel = tokens[4] ? tokens[4].to_i : nil
+        channel_to = tokens[5] ? tokens[5].to_i : nil
+        @args = [from, to, length, channel, channel_to]
+      end
+
+      def self.name
+        'copy'
+      end
+
+      def self.definition
+        'copy <from> <to> <length> [<channel>] [<channel_to>]'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^copy\s+[0-9]{1,3}\s+[0-9]{1,3}\s+[0-9]{1,3}(\s+[0-9]{1,2}){0,2}\s*$/
+      end
+    end
+
+    class Move < Base
+      def initialize(line)
+        @operation = Application::Operation::Move
+        tokens = line.split
+        from = tokens[1].to_i
+        to = tokens[2].to_i
+        length = tokens[3].to_i
+        channel = tokens[4] ? tokens[4].to_i : nil
+        channel_to = tokens[5] ? tokens[5].to_i : nil
+        @args = [from, to, length, channel, channel_to]
+      end
+
+      def self.name
+        'move'
+      end
+
+      def self.definition
+        'move <from> <to> <length> [<channel>] [<channel_to>]'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^move\s+[0-9]{1,3}\s+[0-9]{1,3}\s+[0-9]{1,3}(\s+[0-9]{1,2}){0,2}\s*$/
+      end
+    end
+
+    class Erase < Base
+      def initialize(line)
+        @operation = Application::Operation::Erase
+        tokens = line.split
+        from = tokens[1].to_i
+        length = tokens[2].to_i
+        channel = tokens[3] ? tokens[3].to_i : nil
+        @args = [from, length, channel]
+      end
+
+      def self.name
+        'erase'
+      end
+
+      def self.definition
+        'erase <from> <length> [<channel>]'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^erase\s+[0-9]{1,3}\s+[0-9]{1,3}(\s+[0-9]{1,2})?\s*$/
+      end
+    end
+
+    class Delete < Base
+      def initialize(line)
+        @operation = Application::Operation::Delete
+        tokens = line.split
+        from = tokens[1].to_i
+        length = tokens[2].to_i
+        @args = [from, length]
+      end
+
+      def self.name
+        'delete'
+      end
+
+      def self.definition
+        'delete <from> <length>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^delete\s+[0-9]{1,3}\s+[0-9]{1,3}\s*$/
+      end
+    end
+
+    class Insert < Base
+      def initialize(line)
+        @operation = Application::Operation::Insert
+        tokens = line.split
+        from = tokens[1].to_i
+        length = tokens[2].to_i
+        @args = [from, length]
+      end
+
+      def self.name
+        'insert'
+      end
+
+      def self.definition
+        'insert <from> <length>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^insert\s+[0-9]{1,3}\s+[0-9]{1,3}\s*$/
+      end
+    end
+
     class FileCommand < Base
       def self.file_list(filename)
         dirpath = File.expand_path(SMF.directory)
@@ -160,6 +277,11 @@ class CommandParser
       Velocity,
       Tempo,
       Beat,
+      Copy,
+      Move,
+      Erase,
+      Delete,
+      Insert,
       Read,
       Write,
     ]
