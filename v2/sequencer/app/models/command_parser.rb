@@ -272,6 +272,24 @@ class CommandParser
       end
     end
 
+    class Quit < Base
+      def initialize(line)
+        @operation = Application::Operation::Quit
+      end
+
+      def self.name
+        'quit'
+      end
+
+      def self.definition
+        'quit'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^quit\s*$/
+      end
+    end
+
     COMMANDS = [
       Channel,
       Velocity,
@@ -284,6 +302,7 @@ class CommandParser
       Insert,
       Read,
       Write,
+      Quit,
     ]
 
   end
