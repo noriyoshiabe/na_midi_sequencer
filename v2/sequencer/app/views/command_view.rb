@@ -66,6 +66,13 @@ class CommandView < View
               file_list = candidates[0].file_list(line.split[1])
               if 1 == file_list.size
                 line = ":#{candidates[0].name} #{file_list[0]}"
+              elsif 1 < file_list.size
+                cmpl = nil
+                file_list.each do |s|
+                  cmpl ||= s
+                  cmpl = s.split(//).zip(cmpl.split(//)).select{ |e| e.uniq.size==1 }.map{|e| e[0]}.join
+                end
+                line = ":#{candidates[0].name} #{cmpl}"
               end
             end
           end
