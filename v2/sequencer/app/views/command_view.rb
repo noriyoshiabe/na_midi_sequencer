@@ -22,6 +22,7 @@ class CommandView < View
     line = ':'
     ret = false
     error = nil
+    @parser.reset_index
 
     loop do
       deleteln
@@ -87,10 +88,14 @@ class CommandView < View
               popup("Syntax error.", 0, -1, true)
             else
               deleteln
-              ret = candidate.command(command_line)
+              ret = @parser.parse(candidate, command_line)
               break
             end
           end
+        when Key::KEY_DOWN
+          line = ":#{@parser.next.clone}"
+        when Key::KEY_UP
+          line = ":#{@parser.prev.clone}"
         end
       else
         line << c

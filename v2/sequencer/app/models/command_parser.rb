@@ -1,9 +1,36 @@
 class CommandParser
 
+  def initialize
+    @index = 0
+    @history = []
+  end
+
   def candidates(line)
     Command::COMMANDS.select do |c|
       0 < line.split.size && c.name.index(/^#{line.split[0]}/)
     end
+  end
+
+  def parse(command, line)
+    @history << line unless @history.last == line
+    reset_index
+    command.new(line)
+  end
+
+  def reset_index
+    @index = @history.size
+  end
+
+  def prev
+    return unless 0 < @history.size
+    @index -= 1 if 0 < @index
+    @history[@index]
+  end
+
+  def next
+    @index += 1 if @index < @history.size
+    return '' if @history.size <= @index
+    @history[@index]
   end
 
   module Command
