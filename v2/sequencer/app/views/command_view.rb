@@ -20,6 +20,7 @@ class CommandView < View
   def input_command
     setpos(0,0)
     line = ':'
+    cursor = 1
     ret = false
     error = nil
     @parser.reset_index
@@ -28,16 +29,22 @@ class CommandView < View
       deleteln
       break if line.empty?
 
+      attroff
       setpos(0,0)
       addstr(line)
 
+      color(Color::WHITE_RED)
+      setpos(0, cursor)
+      addch(inch)
+
       command_line = line[1..-1]
+      command_head = line[1...cursor]
 
       unless error
-        candidates = @parser.candidates(command_line)
+        candidates = @parser.candidates(command_head)
         unless candidates.empty?
-          if 1 == candidates.size && command_line =~ /^#{candidates[0].name}\s+/
-            tokens = command_line.split
+          if 1 == candidates.size && command_head =~ /^#{candidates[0].name}\s+/
+            tokens = command_head.split
             list = candidates[0].file_list(tokens[1])
           end
 
@@ -58,22 +65,36 @@ class CommandView < View
         when 27
           line.clear
         when 127
-          line.chop!
+          cursor -= 1 unless 1 >= cursor
+          line.slice!(cursor)
+        when Key::KEY_DC
+          line.slice!(cursor)
         when Key::KEY_CTRL_I
           if 1 == candidates.size
-            if 1 == line.split.size
-              line = ":#{candidates[0].name} "
+            head = line[0..cursor]
+            tail = line[cursor..-1]
+
+            if 1 == head.split.size
+              head = ":#{candidates[0].name} "
+              cursor = head.size
+              line = head + tail
             else
-              file_list = candidates[0].file_list(line.split[1])
-              if 1 == file_list.size
-                line = ":#{candidates[0].name} #{file_list[0]}"
-              elsif 1 < file_list.size
-                cmpl = nil
-                file_list.each do |s|
-                  cmpl ||= s
-                  cmpl = s.split(//).zip(cmpl.split(//)).select{ |e| e.uniq.size==1 }.map{|e| e[0]}.join
+              file_list = candidates[0].file_list(head.split[1])
+              if file_list
+                if 1 == file_list.size
+                  head = ":#{candidates[0].name} #{file_list[0]}"
+                  cursor = head.size
+                  line = head + tail
+                elsif 1 < file_list.size
+                  cmpl = nil
+                  file_list.each do |s|
+                    cmpl ||= s
+                    cmpl = s.split(//).zip(cmpl.split(//)).select{ |e| e.uniq.size==1 }.map{|e| e[0]}.join
+                  end
+                  head = ":#{candidates[0].name} #{cmpl}"
+                  cursor = head.size
+                  line = head + tail
                 end
-                line = ":#{candidates[0].name} #{cmpl}"
               end
             end
           end
@@ -93,12 +114,23 @@ class CommandView < View
             end
           end
         when Key::KEY_DOWN
-          line = ":#{@parser.next.clone}"
+          if @parser.next
+            line = ":#{@parser.next.clone}"
+            cursor = line.size
+          end
         when Key::KEY_UP
-          line = ":#{@parser.prev.clone}"
+          if @parser.prev
+            line = ":#{@parser.prev.clone}"
+            cursor = line.size
+          end
+        when Key::KEY_RIGHT
+          cursor += 1 unless line.size <= cursor
+        when Key::KEY_LEFT
+          cursor -= 1 unless 1 >= cursor
         end
       else
-        line << c
+        line.insert(cursor, c)
+        cursor += 1
       end
     end
 
