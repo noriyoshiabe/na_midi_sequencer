@@ -40,8 +40,8 @@ class CommandView < View
       command_line = line[1..-1]
       command_head = line[1...cursor]
 
+      candidates = @parser.candidates(command_head)
       unless error
-        candidates = @parser.candidates(command_head)
         unless candidates.empty?
           if 1 == candidates.size && command_head =~ /^#{candidates[0].name}\s+/
             tokens = command_head.split

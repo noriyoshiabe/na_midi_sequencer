@@ -276,7 +276,7 @@ class CommandParser
       end
 
       def self.syntax_error(line)
-        line !~ /^read\s+.*\s*$/
+        line !~ /^read\s+.+\s*$/
       end
     end
 
@@ -295,7 +295,7 @@ class CommandParser
       end
 
       def self.syntax_error(line)
-        line !~ /^write\s+.*\s*$/
+        line !~ /^write\s+.+\s*$/
       end
     end
 
