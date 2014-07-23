@@ -7,7 +7,7 @@ class CommandParser
 
   def candidates(line)
     Command::COMMANDS.select do |c|
-      0 < line.split.size && c.name.index(/^#{line.split[0]}/)
+      c.name.index(/^#{line.split[0]}/)
     end
   end
 
