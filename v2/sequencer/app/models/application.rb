@@ -42,6 +42,8 @@ class Application
     :Quit,
     :ReadSong,
     :WriteSong,
+    :ReadSongFailed,
+    :WriteSongFailed,
   ]
 
   Event::Type = enum [
@@ -66,16 +68,24 @@ class Application
   end
 
   def read_song(filename)
-    @song = SMF.read(filename)
-    @song.add_observer(self)
-    @editor.song = @song
-    @editor.set_default
-    notify(Event::Type::App, Event::ReadSong)
+    begin
+      @song = SMF.read(filename)
+      @song.add_observer(self)
+      @editor.song = @song
+      @editor.set_default
+      notify(Event::Type::App, Event::ReadSong)
+    rescue => ex
+      notify(Event::Type::App, Event::ReadSongFailed, ex.message)
+    end
   end
 
   def write_song(filename)
-    SMF.write(@song, filename)
-    notify(Event::Type::App, Event::WriteSong)
+    begin
+      SMF.write(@song, filename)
+      notify(Event::Type::App, Event::WriteSong)
+    rescue => ex
+      notify(Event::Type::App, Event::WriteSongFailed, ex.message)
+    end
   end
 
   def update(sender, event)
@@ -93,9 +103,9 @@ class Application
     notify(Event::Type::App, Event::Quit)
   end
 
-  def notify(type, event)
+  def notify(type, event, *args)
     changed
-    notify_observers(self, type, event)
+    notify_observers(self, type, event, args)
   end
 
   def execute(operation, *args)

@@ -15,6 +15,13 @@ class CommandView < View
   end
 
   def update(app, type, event, *args)
+    case type
+    when Application::Event::Type::App
+      case event
+      when Application::Event::ReadSongFailed, Application::Event::WriteSongFailed
+        popup(args[0], 0, 0, true)
+      end
+    end
   end
 
   def input_command
