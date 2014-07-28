@@ -24,6 +24,7 @@ class Editor
     :Insert,
     :Tempo,
     :Beat,
+    :Marker,
   ]
 
   QUANTIZE_4 = Song::TIME_BASE
@@ -279,6 +280,11 @@ class Editor
   def set_beat(index, numerator, denominator)
     execute(Command::Beat.new(self, index, numerator, denominator))
     notify(Event::Beat)
+  end
+
+  def set_marker(index, text)
+    execute(Command::Marker.new(self, index, text))
+    notify(Event::Marker)
   end
 
   def execute(cmd)
@@ -553,5 +559,23 @@ class Editor
       end
     end
 
+    class Marker < Base
+      def initialize(editor, index, text)
+        super(editor)
+        @index = index
+        @text = text
+
+        m = @editor.song.measure_at(index)
+        @prev_text = m.marker
+      end
+
+      def execute
+        @editor.song.set_marker(@index, @text)
+      end
+
+      def undo
+        @editor.song.set_marker(@index, @prev_text)
+      end
+    end
   end
 end

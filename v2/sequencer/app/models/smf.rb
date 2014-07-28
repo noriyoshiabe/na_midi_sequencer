@@ -1,3 +1,5 @@
+require 'nkf'
+
 class SMF
 
   def self.directory
@@ -182,6 +184,8 @@ class SMF
         meta = read(ctx, 1).unpack("C").first
 
         case meta
+        when 0x06
+          Marker
         when 0x2F
           TrackEnd
         when 0x51
@@ -248,6 +252,17 @@ class SMF
       end
     end
 
+    class Marker < Data
+      def self.parse_data(ctx)
+        len = flexible_length(ctx)
+        text = read(ctx, len)
+        text.encode!("UTF-8", NKF.guess(text).to_s)
+        index = ctx.song.step2measure(ctx.step).index
+        ctx.song.set_marker(index, text)
+        DeltaTime
+      end
+    end
+
     class Tempo < Data
       def self.parse_data(ctx)
         read(ctx, 1)
@@ -304,6 +319,10 @@ class SMF
         result = []
         @step = 0
         @song.measures.each do |m|
+          if @song.has_marker(m.index)
+            result += delta_time(m.step)
+            result += marker(m)
+          end
           if @song.has_tempo_change(m.index)
             result += delta_time(m.step)
             result += tempo_change(m)
@@ -355,29 +374,39 @@ class SMF
         end
       end
 
+      def flexible_length(val)
+        b = []
+
+        if 0x1FFFFF < val
+          b[0] = (0x80 | (0x000000FF & (val >> 21)))
+          b[1] = (0x80 | (0x000000FF & (val >> 14)))
+          b[2] = (0x80 | (0x000000FF & (val >> 7)))
+          b[3] = ((~0x80) & (0x000000FF & val))
+        elsif 0x3FFF < val
+          b[0] = (0x80 | (0x000000FF & (val >> 14)))
+          b[1] = (0x80 | (0x000000FF & (val >> 7)))
+          b[2] = ((~0x80) & (0x000000FF & val))
+        elsif 0x7F < val
+          b[0] = (0x80 | (0x000000FF & (val >> 7)))
+          b[1] = ((~0x80) & (0x000000FF & val))
+        else
+          b[0] = ((~0x80) & (0x000000FF & val))
+        end
+
+        b
+      end
+
       def delta_time(step)
         delta = step - @step
         @step = step
 
-        b = []
+        flexible_length(delta)
+      end
 
-        if 0x1FFFFF < delta
-          b[0] = (0x80 | (0x000000FF & (delta >> 21)))
-          b[1] = (0x80 | (0x000000FF & (delta >> 14)))
-          b[2] = (0x80 | (0x000000FF & (delta >> 7)))
-          b[3] = ((~0x80) & (0x000000FF & delta))
-        elsif 0x3FFF < delta
-          b[0] = (0x80 | (0x000000FF & (delta >> 14)))
-          b[1] = (0x80 | (0x000000FF & (delta >> 7)))
-          b[2] = ((~0x80) & (0x000000FF & delta))
-        elsif 0x7F < delta
-          b[0] = (0x80 | (0x000000FF & (delta >> 7)))
-          b[1] = ((~0x80) & (0x000000FF & delta))
-        else
-          b[0] = ((~0x80) & (0x000000FF & delta))
-        end
-
-        b
+      def marker(measure)
+        b = [0xFF, 0x06]
+        b += flexible_length(measure.marker.size)
+        b += measure.marker.bytes
       end
 
       def tempo_change(measure)

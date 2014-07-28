@@ -135,6 +135,12 @@ class Song
     end
   end
 
+  def set_marker(index, text)
+    measure = measure_at(index)
+    return false unless measure
+    measure.marker = text
+  end
+
   def add_note(note)
     @notes << note
     @notes.sort_by! { |n| [n.step, n.channel, n.noteno] }
@@ -170,6 +176,10 @@ class Song
       measure_at(measure_no).denominator != measure_at(measure_no - 1).denominator
   end
 
+  def has_marker(measure_no)
+    !measure_at(measure_no).marker.nil?
+  end
+
   class Measure
     attr_accessor :index
     attr_accessor :step
@@ -177,16 +187,18 @@ class Song
     attr_accessor :numerator
     attr_accessor :denominator
     attr_accessor :tempo
+    attr_accessor :marker
     attr_accessor :next_step
     attr_accessor :next_time
 
-    def initialize(index, step, time, numerator = 4, denominator = 4, tempo = 120.0)
+    def initialize(index, step, time, numerator = 4, denominator = 4, tempo = 120.0, marker = nil)
       @index = index
       @step = step
       @time = time
       @numerator = numerator
       @denominator = denominator
       @tempo = tempo
+      @marker = marker
 
       calc_next
     end

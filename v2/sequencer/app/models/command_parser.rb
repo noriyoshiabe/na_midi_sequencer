@@ -1,3 +1,5 @@
+require 'shellwords'
+
 class CommandParser
 
   def initialize
@@ -135,6 +137,28 @@ class CommandParser
 
       def self.syntax_error(line)
         line !~ /^beat\s+[0-9]{1,3}\s+[0-9]{1,2}\/[0-9]{1,2}\s*$/
+      end
+    end
+
+    class Marker < Base
+      def initialize(line)
+        @operation = Application::Operation::Marker
+        tokens = Shellwords.split(line)
+        index = tokens[1].to_i
+        text = tokens[2]
+        @args = [index, text]
+      end
+
+      def self.name
+        'marker'
+      end
+
+      def self.definition
+        'marker <measure> <text>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^marker\s+[0-9]{1,3}\s+(\S+|\'.+\'|\".+\")\s*$/
       end
     end
 
@@ -329,6 +353,7 @@ class CommandParser
       Velocity,
       Tempo,
       Beat,
+      Marker,
       Copy,
       Move,
       Erase,

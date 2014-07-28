@@ -29,6 +29,7 @@ class Application
     :Velocity,
     :Tempo,
     :Beat,
+    :Marker,
     :Copy,
     :Move,
     :Erase,
@@ -160,6 +161,8 @@ class Application
       @editor.set_tempo(args[0], args[1])
     when Operation::Beat
       @editor.set_beat(args[0], args[1], args[2])
+    when Operation::Marker
+      @editor.set_marker(args[0], args[1])
     when Operation::Copy
       @editor.copy(args[0], args[1], args[2], args[3], args[4])
     when Operation::Move
