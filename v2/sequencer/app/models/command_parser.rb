@@ -21,14 +21,21 @@ class CommandParser
     @index = @history.size
   end
 
+  def has_prev
+    0 < @history.size
+  end
+
   def prev
-    return unless 0 < @history.size
     @index -= 1 if 0 < @index
     @history[@index]
   end
 
+  def has_next
+    @index < @history.size
+  end
+
   def next
-    @index += 1 if @index < @history.size
+    @index += 1
     return '' if @history.size <= @index
     @history[@index]
   end

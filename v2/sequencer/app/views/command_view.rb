@@ -121,12 +121,12 @@ class CommandView < View
             end
           end
         when Key::KEY_DOWN
-          if @parser.next
+          if @parser.has_next
             line = ":#{@parser.next.clone}"
             cursor = line.size
           end
         when Key::KEY_UP
-          if @parser.prev
+          if @parser.has_prev
             line = ":#{@parser.prev.clone}"
             cursor = line.size
           end
