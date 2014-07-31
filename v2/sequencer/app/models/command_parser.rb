@@ -2,9 +2,17 @@ require 'shellwords'
 
 class CommandParser
 
+  HISTORY_FILE = "#{$work_dir}/history"
+
   def initialize
     @index = 0
-    @history = []
+    @history = File.exists?(HISTORY_FILE) ? File.readlines(HISTORY_FILE).map { |s| s.gsub!(/(\r\n|\r|\n)/, '') } : []
+    @history_size = YAML.load_file("#{$work_dir}/settings.yml")["history_size"]
+  end
+
+  def save_history
+    @history.shift([@history.size - @history_size, 0].max)
+    File.write(HISTORY_FILE, @history.join("\n") + "\n")
   end
 
   def candidates(line)

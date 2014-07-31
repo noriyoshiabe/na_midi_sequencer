@@ -3,7 +3,7 @@ require 'nkf'
 class SMF
 
   def self.directory
-    YAML.load_file("#{$work_dir}/directory.yml")["documens"]
+    YAML.load_file("#{$work_dir}/settings.yml")["documens"]
   end
 
   def self.read(filename)

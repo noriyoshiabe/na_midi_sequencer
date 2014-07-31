@@ -20,6 +20,8 @@ class CommandView < View
       case event
       when Application::Event::ReadSongFailed, Application::Event::WriteSongFailed
         popup(args[0], 0, 0, true)
+      when Application::Event::Quit
+        @parser.save_history
       end
     end
   end
