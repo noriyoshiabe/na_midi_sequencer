@@ -18,6 +18,7 @@ class Editor
     :ChannelChange,
     :VelocityChange,
     :RecordingChange,
+    :ChrodInputChange,
     :Copy,
     :Move,
     :Erase,
@@ -85,6 +86,7 @@ class Editor
   attr_accessor :undo_stack
   attr_accessor :redo_stack
   attr_accessor :recording
+  attr_accessor :chord_input
 
   def initialize(song)
     @song = song
@@ -101,6 +103,8 @@ class Editor
     @undo_stack = []
     @redo_stack = []
     @recording = false
+    @chord_input = false
+    @notes_for_chord = {}
   end
 
   def notify(event)
@@ -209,6 +213,12 @@ class Editor
     notify(Event::RecordingChange)
   end
 
+  def toggle_chord_input
+    @chord_input = !@chord_input
+    @notes_for_chord = {} unless @chord_input
+    notify(Event::ChrodInputChange)
+  end
+
   def add_note(key)
     noteno = calc_noteno(key)
     return false unless noteno
@@ -217,13 +227,26 @@ class Editor
     @noteno = noteno
 
     if @recording
-      execute(Command::AddNote.new(self, note))
-      notify(Event::AddNote)
+      if @chord_input
+        @notes_for_chord[@noteno] = note
+      else
+        execute(Command::AddNote.new(self, [note]))
+        notify(Event::AddNote)
+      end
     else
       notify(Event::MovePosition)
     end
 
     note
+  end
+
+  def commit_notes
+    return if @notes_for_chord.empty?
+
+    execute(Command::AddNote.new(self, @notes_for_chord.values))
+    notify(Event::AddNote)
+
+    @notes_for_chord = {}
   end
 
   def calc_noteno(key)
@@ -232,22 +255,22 @@ class Editor
   end
 
   def tie
-    note = @song.notes_by_range(@step - DECAY_MARGIN, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
-    return unless note
+    notes = @song.notes_by_range(@step - DECAY_MARGIN, @step + @quantize, @channel, true).select { |n| @chord_input || n.noteno == @noteno }
+    return if notes.empty?
 
-    execute(Command::Tie.new(self, note))
+    execute(Command::Tie.new(self, notes))
     notify(Event::Tie)
   end
 
   def untie
-    note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, false).find { |n| n.noteno == @noteno }
-    if note
-      execute(Command::RemoveNote.new(self, note, true))
+    notes = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, false).select { |n| @chord_input || n.noteno == @noteno }
+    unless notes.empty?
+      execute(Command::RemoveNote.new(self, notes, true))
       notify(Event::RemoveNote)
     else
-      note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
-      if note
-        execute(Command::Untie.new(self, note))
+      notes = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, true).select { |n| @chord_input || n.noteno == @noteno }
+      unless notes.empty?
+        execute(Command::Untie.new(self, notes))
         notify(Event::Untie)
       else
         backward
@@ -256,9 +279,9 @@ class Editor
   end
 
   def remove
-    note = @song.notes_by_range(@step, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
-    if note
-      execute(Command::RemoveNote.new(self, note, false))
+    notes = @song.notes_by_range(@step, @step + @quantize, @channel, true).select { |n| @chord_input || n.noteno == @noteno }
+    unless notes.empty?
+      execute(Command::RemoveNote.new(self, notes, false))
       notify(Event::RemoveNote)
     end
   end
@@ -346,75 +369,75 @@ class Editor
     end
 
     class AddNote < Base
-      def initialize(editor, note)
+      def initialize(editor, notes)
         super(editor)
-        @note = note
+        @notes = notes
         @prev_step = @editor.step
         @next_step = @prev_step + @editor.quantize
       end
       def execute
-        @editor.song.add_note(@note)
+        @notes.each { |n| @editor.song.add_note(n) }
         @editor.step = @next_step
       end
       def undo
-        @editor.song.remove_note(@note)
+        @notes.each { |n| @editor.song.remove_note(n) }
         @editor.step = @prev_step
       end
     end
 
     class RemoveNote < Base
-      def initialize(editor, note, backword)
+      def initialize(editor, notes, backword)
         super(editor)
-        @note = note
+        @notes = notes
         @prev_step = @editor.step
         @next_step = backword ? [0, @prev_step - @editor.quantize].max : @prev_step
       end
       def execute
-        @editor.song.remove_note(@note)
+        @notes.each { |n| @editor.song.remove_note(n) }
         @editor.step = @next_step
       end
       def undo
-        @editor.song.add_note(@note)
+        @notes.each { |n| @editor.song.add_note(n) }
         @editor.step = @prev_step
       end
     end
 
     class Tie < Base
-      def initialize(editor, note)
+      def initialize(editor, notes)
         super(editor)
-        @note = note
+        @notes = notes
         @quantize = @editor.quantize
         @prev_step = @editor.step
         @next_step = @prev_step + @editor.quantize
       end
 
       def execute
-        @note.gatetime += @quantize
+        @notes.each { |n| n.gatetime += @quantize }
         @editor.step = @next_step
       end
 
       def undo
-        @note.gatetime -= @quantize
+        @notes.each { |n| n.gatetime -= @quantize }
         @editor.step = @prev_step
       end
     end
 
     class Untie < Base
-      def initialize(editor, note)
+      def initialize(editor, notes)
         super(editor)
-        @note = note
+        @notes = notes
         @quantize = @editor.quantize
         @prev_step = @editor.step
         @next_step = [0, @prev_step - @editor.quantize].max
       end
 
       def execute
-        @note.gatetime -= @quantize
+        @notes.each { |n| n.gatetime -= @quantize }
         @editor.step = @next_step
       end
 
       def undo
-        @note.gatetime += @quantize
+        @notes.each { |n| n.gatetime += @quantize }
         @editor.step = @prev_step
       end
     end

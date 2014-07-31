@@ -30,12 +30,15 @@ class StatusView < View
     addstr(" " * self.width)
 
     setpos(0, 0)
+
     if @app.editor.recording
       color(Color::RED_BLUE)
-      addstr("[REC]")
+      mode = "[REC-#{@app.editor.chord_input ? 'CHORD' : 'NOTE'}]"
     else
-      addstr("[PRE]")
+      mode = "[PREVIEW]"
     end
+
+    addstr(mode)
 
     color(Color::WHITE_BLUE)
 
@@ -49,8 +52,9 @@ class StatusView < View
     infos << "undo:#{0 == @app.editor.undo_stack.size ? '-' : sprintf("%d", @app.editor.undo_stack.size)}"
     infos << "redo:#{0 == @app.editor.redo_stack.size ? '-' : sprintf("%d", @app.editor.redo_stack.size)}"
 
-    setpos(0, 6)
-    addstr(infos.join(' ').slice(0...(width - 6)))
+
+    setpos(0, mode.length + 1)
+    addstr(infos.join(' ').slice(0...(width - (mode.length + 1))))
 
     infos = []
 

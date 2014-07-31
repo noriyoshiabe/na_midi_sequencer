@@ -26,7 +26,9 @@ class Application
     :QuantizeDown,
     :TogglePlay,
     :ToggleRec,
+    :ToggleChordInput,
     :Note,
+    :CommitNotes,
     :Channel,
     :Velocity,
     :Tempo,
@@ -159,6 +161,8 @@ class Application
       @player.running ? @player.stop : @player.play(@song, @editor.step)
     when Operation::ToggleRec
       @editor.toggle_rec
+    when Operation::ToggleChordInput
+      @editor.toggle_chord_input
     when Operation::Channel
       @editor.set_channel(args[0])
     when Operation::Velocity
@@ -182,6 +186,8 @@ class Application
     when Operation::Note
       note = @editor.add_note(args[0])
       @player.send_echo(@song, note) if note
+    when Operation::CommitNotes
+      @editor.commit_notes
     when Operation::Read
       read_song(args[0])
     when Operation::Write
