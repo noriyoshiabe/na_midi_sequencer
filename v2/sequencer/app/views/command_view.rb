@@ -2,16 +2,28 @@ require 'view'
 
 class CommandView < View
 
+  attr_accessor :key_name
+
   def initialize(app, parent, layout = {})
     super(parent, layout)
     @app = app
     @app.add_observer(self)
     @parser = CommandParser.new
+    @key_name = ''
 
     keypad(true)
   end
   
   def on_render
+    render_keyname
+  end
+
+  def render_keyname
+    attroff
+    setpos(0, width - 20)
+    addstr(' ' * 20)
+    setpos(0, width - (@key_name.length + 2))
+    addstr("[#{@key_name}]")
   end
 
   def update(app, type, event, *args)

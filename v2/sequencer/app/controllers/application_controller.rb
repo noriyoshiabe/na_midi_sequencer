@@ -78,7 +78,7 @@ class ApplicationController
   end
 
   def handle_key_input(key)
-    Log.debug(Key.name(key))
+    @command_view.key_name = Key.name(key)
 
     operation = @keymap[key]
     return unless operation
