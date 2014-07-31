@@ -120,11 +120,11 @@ class Application
     when Operation::Forward
       @editor.forward
     when Operation::Backward
-      @editor.backkward
+      @editor.backward
     when Operation::ForwardMeasure
       @editor.forward_measure
     when Operation::BackwardMeasure
-      @editor.backkward_measure
+      @editor.backward_measure
     when Operation::Rewind
       @editor.rewind
     when Operation::Up

@@ -113,7 +113,7 @@ class Editor
     notify(Event::MovePosition)
   end
 
-  def backkward
+  def backward
     return if 0 == @step
     @step -= @quantize
     @step = 0 if 0 > @step
@@ -126,7 +126,7 @@ class Editor
     notify(Event::MovePosition)
   end
 
-  def backkward_measure
+  def backward_measure
     position = @song.step2position(@step)
     measure = if 0 == position.beat && 0 == position.tick
                 position.measure - 1
@@ -250,7 +250,7 @@ class Editor
         execute(Command::Untie.new(self, note))
         notify(Event::Untie)
       else
-        backkward
+        backward
       end
     end
   end
