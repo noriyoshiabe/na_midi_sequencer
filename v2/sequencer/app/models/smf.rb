@@ -3,8 +3,7 @@ require 'nkf'
 class SMF
 
   def self.directory
-    # TODO: should be configurable
-    "~/namidi"
+    YAML.load_file("#{$work_dir}/directory.yml")["documens"]
   end
 
   def self.read(filename)
