@@ -1,6 +1,6 @@
 require 'logger'
 
-$logger = Logger.new($root_dir + '/log/namidi.log')
+$logger = Logger.new($work_dir + '/namidi.log')
 
 def p(content)
   $logger.debug(content)
