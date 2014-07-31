@@ -24,6 +24,21 @@ class StatusView < View
   end
 
   def on_render
+    setpos(0, 0)
+    color(Color::WHITE_BLUE)
+    bold
+    addstr(" " * self.width)
+
+    setpos(0, 0)
+    if @app.editor.recording
+      color(Color::RED_BLUE)
+      addstr("[REC]")
+    else
+      addstr("[PRE]")
+    end
+
+    color(Color::WHITE_BLUE)
+
     measure = @app.song.step2measure(@app.editor.step)
 
     infos = []
@@ -34,8 +49,13 @@ class StatusView < View
     infos << "undo:#{0 == @app.editor.undo_stack.size ? '-' : sprintf("%d", @app.editor.undo_stack.size)}"
     infos << "redo:#{0 == @app.editor.redo_stack.size ? '-' : sprintf("%d", @app.editor.redo_stack.size)}"
 
+    setpos(0, 6)
+    addstr(infos.join(' ').slice(0...(width - 6)))
+
+    infos = []
+
     if @app.player.running
-      infos << "[playing"
+      infos << "[PLAY"
       position = @app.song.step2position(@app.player.current_step)
       infos << sprintf("step:%03d:%02d:%03d", position.measure, position.beat + 1, position.tick)
       time_mill = (@app.player.current_time * 1000).to_i
@@ -45,12 +65,9 @@ class StatusView < View
       infos << sprintf("time:%02d:%02d:%03d]", min, sec, mill)
     end
 
-    setpos(0, 0)
-    color(Color::WHITE_BLUE)
-    bold
-    addstr(" " * self.width)
-    setpos(0, 0)
-    addstr(infos.join(' ').slice(0...width))
+    text = infos.join(' ')
+    setpos(0, width - text.length)
+    addstr(infos.join(' ').slice(0...(width - text.length)))
     attroff
   end
 

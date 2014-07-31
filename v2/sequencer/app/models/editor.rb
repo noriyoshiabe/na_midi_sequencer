@@ -17,6 +17,7 @@ class Editor
     :QuantizeChange,
     :ChannelChange,
     :VelocityChange,
+    :RecordingChange,
     :Copy,
     :Move,
     :Erase,
@@ -83,6 +84,7 @@ class Editor
   attr_accessor :octave
   attr_accessor :undo_stack
   attr_accessor :redo_stack
+  attr_accessor :recording
 
   def initialize(song)
     @song = song
@@ -98,6 +100,7 @@ class Editor
     @quantize = QUANTIZE_8
     @undo_stack = []
     @redo_stack = []
+    @recording = false
   end
 
   def notify(event)
@@ -201,14 +204,24 @@ class Editor
     notify(Event::VelocityChange)
   end
 
+  def toggle_rec
+    @recording = !@recording
+    notify(Event::RecordingChange)
+  end
+
   def add_note(key)
     noteno = calc_noteno(key)
     return false unless noteno
 
     note = Note.new(@step, @channel, noteno, @velocity, @quantize - DECAY_MARGIN)
-    execute(Command::AddNote.new(self, note))
     @noteno = noteno
-    notify(Event::AddNote)
+
+    if @recording
+      execute(Command::AddNote.new(self, note))
+      notify(Event::AddNote)
+    else
+      notify(Event::MovePosition)
+    end
 
     note
   end

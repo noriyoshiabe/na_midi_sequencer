@@ -25,6 +25,7 @@ class Application
     :QuantizeUp,
     :QuantizeDown,
     :TogglePlay,
+    :ToggleRec,
     :Note,
     :Channel,
     :Velocity,
@@ -156,6 +157,8 @@ class Application
       @editor.quantize_down
     when Operation::TogglePlay
       @player.running ? @player.stop : @player.play(@song, @editor.step)
+    when Operation::ToggleRec
+      @editor.toggle_rec
     when Operation::Channel
       @editor.set_channel(args[0])
     when Operation::Velocity

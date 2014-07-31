@@ -69,6 +69,7 @@ class View
     WHITE_BLUE = 3
     WHITE_GREEN = 4
     WHITE_MAGENTA = 5
+    RED_BLUE = 6
   end
 
   def color(color)
