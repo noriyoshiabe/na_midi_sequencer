@@ -18,6 +18,7 @@ class Application
     :Redo,
     :Tie,
     :Untie,
+    :Remove,
     :Rest,
     :OctaveUp,
     :OctaveDown,
@@ -141,6 +142,8 @@ class Application
       @editor.tie
     when Operation::Untie
       @editor.untie
+    when Operation::Remove
+      @editor.remove
     when Operation::Rest
       @editor.rest
     when Operation::OctaveUp

@@ -229,7 +229,7 @@ class Editor
   def untie
     note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, false).find { |n| n.noteno == @noteno }
     if note
-      execute(Command::RemoveNote.new(self, note))
+      execute(Command::RemoveNote.new(self, note, true))
       notify(Event::RemoveNote)
     else
       note = @song.notes_by_range(@step - @quantize, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
@@ -239,6 +239,14 @@ class Editor
       else
         backkward
       end
+    end
+  end
+
+  def remove
+    note = @song.notes_by_range(@step, @step + @quantize, @channel, true).find { |n| n.noteno == @noteno }
+    if note
+      execute(Command::RemoveNote.new(self, note, false))
+      notify(Event::RemoveNote)
     end
   end
 
@@ -342,11 +350,11 @@ class Editor
     end
 
     class RemoveNote < Base
-      def initialize(editor, note)
+      def initialize(editor, note, backword)
         super(editor)
         @note = note
         @prev_step = @editor.step
-        @next_step = [0, @prev_step - @editor.quantize].max
+        @next_step = backword ? [0, @prev_step - @editor.quantize].max : @prev_step
       end
       def execute
         @editor.song.remove_note(@note)
