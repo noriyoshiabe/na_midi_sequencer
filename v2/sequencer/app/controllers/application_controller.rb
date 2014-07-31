@@ -96,7 +96,7 @@ class ApplicationController
         @piano_roll_view.zoom_reset
       when Operation::SwitchTrack
         channel = @piano_roll_view.switch_track
-        @app.execute(Application::Operation::SetChannel, channel)
+        @app.execute(Application::Operation::Channel, channel)
       when Operation::Command
         command = @command_view.input_command
         if command
