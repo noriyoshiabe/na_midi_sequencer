@@ -10,6 +10,7 @@ class Application
     :ForwardMeasure,
     :BackwardMeasure,
     :Rewind,
+    :Position,
     :Up,
     :Down,
     :PageUp,
@@ -129,6 +130,8 @@ class Application
       @editor.backward_measure
     when Operation::Rewind
       @editor.rewind
+    when Operation::Position
+      @editor.set_position(args[0], args[1], args[2])
     when Operation::Up
       @editor.up
     when Operation::Down

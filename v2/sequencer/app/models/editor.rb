@@ -8,6 +8,7 @@ class Editor
     :StepForward,
     :StepBackward,
     :StepRewind,
+    :SetPosition,
     :NoteNoChange,
     :AddNote,
     :RemoveNote,
@@ -149,6 +150,12 @@ class Editor
     return unless 0 < @step
     @step = 0
     notify(Event::StepRewind)
+  end
+
+  def set_position(measure_no, beat, tick)
+    @step = @song.measure2step(measure_no)
+    @step += (beat - 1) * Song::TIME_BASE + tick
+    notify(Event::SetPosition)
   end
 
   def up

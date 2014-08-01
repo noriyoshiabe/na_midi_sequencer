@@ -194,6 +194,8 @@ class PianoRollView < View
         update_viewport_by_editor_forwad
       when Editor::Event::StepBackward, Editor::Event::StepRewind
         update_viewport_by_editor_backword
+      when Editor::Event::StepBackward, Editor::Event::SetPosition
+        @offset_step = @app.editor.step
       end
     when Application::Event::Type::Player
       case event

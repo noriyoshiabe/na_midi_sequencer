@@ -69,6 +69,30 @@ class CommandParser
       end
     end
 
+    class Position < Base
+      def initialize(line)
+        @operation = Application::Operation::Position
+
+        tokens = line.split
+        measure_no = tokens[1].to_i
+        beat = tokens[2] ? tokens[2].to_i : 1
+        tick = tokens[3] ? tokens[3].to_i : 0
+        @args = [measure_no, beat, tick]
+      end
+
+      def self.name
+        'position'
+      end
+
+      def self.definition
+        'position <measure_no> [<beat>] [<tick>]'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^position\s+[0-9]{1,3}(\s+(([1-9]{1,1}|1[0-9]{1,1})|[0-9]{1,2}\s+[0-9]{1,3})){0,1}\s*$/
+      end
+    end
+
     class Channel < Base
       def initialize(line)
         @operation = Application::Operation::Channel
@@ -168,6 +192,9 @@ class CommandParser
       def self.syntax_error(line)
         line !~ /^marker\s+[0-9]{1,3}\s+(\S+|\'.+\'|\".+\")\s*$/
       end
+    end
+
+    class Position < Base
     end
 
     class Copy < Base
@@ -357,6 +384,7 @@ class CommandParser
     end
 
     COMMANDS = [
+      Position,
       Channel,
       Velocity,
       Tempo,
