@@ -18,6 +18,7 @@ class Screen < View
     Curses.init_pair Color::WHITE_GREEN, Curses::COLOR_WHITE, Curses::COLOR_GREEN
     Curses.init_pair Color::WHITE_MAGENTA, Curses::COLOR_WHITE, Curses::COLOR_MAGENTA
 
+    Curses.init_pair Color::RED_BLACK, Curses::COLOR_RED, Curses::COLOR_BLACK
     Curses.init_pair Color::RED_BLUE, Curses::COLOR_RED, Curses::COLOR_BLUE
 
     @window = Curses.stdscr

@@ -109,10 +109,23 @@ class TrackView < View
   def render_cursor
     x = (@app.editor.step - offset_step) / col_step
     y = height - 1 - (@app.editor.noteno - @offset_note)
-    setpos(y, NOTES_OFFSET_X + x)
-    color(Color::WHITE_RED)
+
     bold
-    addch(inch)
+
+    if 0 > x
+      setpos(y, NOTES_OFFSET_X)
+      color(Color::RED_BLACK)
+      addch('<')
+    elsif x < width - NOTES_OFFSET_X
+      setpos(y, NOTES_OFFSET_X + x)
+      color(Color::WHITE_RED)
+      addch(inch)
+    else
+      setpos(y, width - 1)
+      color(Color::RED_BLACK)
+      addch('>')
+    end
+
     attroff
   end
 
