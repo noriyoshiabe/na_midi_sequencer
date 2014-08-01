@@ -61,11 +61,43 @@ class PianoRollView < View
   end
 
   def update_viewport
-    if @offset_step > @app.editor.step
-      @offset_step = @app.editor.step
-    elsif @app.editor.step > @offset_step + col_step * (notes_width - 1)
-      @offset_step += @app.editor.step - (@offset_step + col_step * (notes_width - 1))
+    if @app.player.running
+      if @offset_step > @app.player.current_step
+        @offset_step = @app.player.current_step
+      elsif @app.player.current_step > @offset_step + viewport_step_length
+        @offset_step = @app.song.step2measure(@app.player.current_step).step
+      end
+    else
+      if @offset_step > @app.editor.step
+        @offset_step = @app.editor.step
+      elsif @app.editor.step > @offset_step + viewport_step_length
+        @offset_step += @app.editor.step - (@offset_step + viewport_step_length)
+      end
     end
+  end
+
+  def update_viewport_by_editor_forwad
+    if viewport_step_length > distance_player_from_editor
+      if @app.editor.step > @offset_step + viewport_step_length
+        @offset_step += @app.editor.step - (@offset_step + viewport_step_length)
+      end
+    end
+  end
+
+  def update_viewport_by_editor_backword
+    if viewport_step_length > distance_player_from_editor
+      if @offset_step > @app.editor.step
+        @offset_step = @app.editor.step
+      end
+    end
+  end
+
+  def viewport_step_length
+    col_step * (notes_width - 1)
+  end
+
+  def distance_player_from_editor
+    (@app.editor.step - @app.player.current_step).abs
   end
 
   def render_position
@@ -158,6 +190,10 @@ class PianoRollView < View
       case event
       when Editor::Event::ChannelChange
         @active_track.channel = @app.editor.channel
+      when Editor::Event::StepForward
+        update_viewport_by_editor_forwad
+      when Editor::Event::StepBackward, Editor::Event::StepRewind
+        update_viewport_by_editor_backword
       end
     when Application::Event::Type::Player
       case event

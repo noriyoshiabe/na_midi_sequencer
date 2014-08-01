@@ -5,7 +5,10 @@ class Editor
   include Observable
 
   Event = enum [
-    :MovePosition,
+    :StepForward,
+    :StepBackward,
+    :StepRewind,
+    :NoteNoChange,
     :AddNote,
     :RemoveNote,
     :Tie,
@@ -114,20 +117,20 @@ class Editor
 
   def forward
     @step += @quantize
-    notify(Event::MovePosition)
+    notify(Event::StepForward)
   end
 
   def backward
     return if 0 == @step
     @step -= @quantize
     @step = 0 if 0 > @step
-    notify(Event::MovePosition)
+    notify(Event::StepBackward)
   end
 
   def forward_measure
     position = @song.step2position(@step)
     @step = @song.measure2step(position.measure + 1)
-    notify(Event::MovePosition)
+    notify(Event::StepForward)
   end
 
   def backward_measure
@@ -139,37 +142,37 @@ class Editor
               end
     return unless 0 <= measure
     @step = @song.measure2step(measure)
-    notify(Event::MovePosition)
+    notify(Event::StepBackward)
   end
 
   def rewind
     return unless 0 < @step
     @step = 0
-    notify(Event::MovePosition)
+    notify(Event::StepRewind)
   end
 
   def up
     return unless 127 > @noteno
     @noteno += 1
-    notify(Event::MovePosition)
+    notify(Event::NoteNoChange)
   end
 
   def down
     return unless 0 < @noteno
     @noteno -= 1
-    notify(Event::MovePosition)
+    notify(Event::NoteNoChange)
   end
 
   def page_up
     return unless 127 > @noteno
     @noteno = [@noteno + 12, 127].min
-    notify(Event::MovePosition)
+    notify(Event::NoteNoChange)
   end
 
   def page_down
     return unless 0 < @noteno
     @noteno = [@noteno - 12, 0].max
-    notify(Event::MovePosition)
+    notify(Event::NoteNoChange)
   end
 
   def octave_shift_up
@@ -234,7 +237,7 @@ class Editor
         notify(Event::AddNote)
       end
     else
-      notify(Event::MovePosition)
+      notify(Event::NoteNoChange)
     end
 
     note
