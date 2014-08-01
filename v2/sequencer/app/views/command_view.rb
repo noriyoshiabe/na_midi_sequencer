@@ -80,7 +80,12 @@ class CommandView < View
       end
 
       error = nil
-      case c = getch
+
+      render_keyname
+      c = getch
+      @key_name = Key.name(c)
+
+      case c
       when Fixnum
         case c
         when 27
