@@ -192,6 +192,7 @@ class Application
     when Operation::CommitNotes
       @editor.commit_notes
     when Operation::Read
+      @player.stop if @player.running
       read_song(args[0])
     when Operation::Write
       write_song(args[0])
