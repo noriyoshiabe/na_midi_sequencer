@@ -406,7 +406,7 @@ class SMF
 
       def marker(measure)
         b = [0xFF, 0x06]
-        b += flexible_length(measure.marker.size)
+        b += flexible_length(measure.marker.bytes.size)
         b += measure.marker.bytes
       end
 
