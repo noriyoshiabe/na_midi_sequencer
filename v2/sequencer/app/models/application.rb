@@ -25,6 +25,10 @@ class Application
     :OctaveDown,
     :QuantizeUp,
     :QuantizeDown,
+    :Quantize4,
+    :Quantize8,
+    :Quantize16,
+    :Quantize32,
     :TogglePlay,
     :ToggleRec,
     :ToggleChordInput,
@@ -161,6 +165,14 @@ class Application
       @editor.quantize_up
     when Operation::QuantizeDown
       @editor.quantize_down
+    when Operation::Quantize4
+      @editor.quantize_select(Editor::QUANTIZE_4)
+    when Operation::Quantize8
+      @editor.quantize_select(Editor::QUANTIZE_8)
+    when Operation::Quantize16
+      @editor.quantize_select(Editor::QUANTIZE_16)
+    when Operation::Quantize32
+      @editor.quantize_select(Editor::QUANTIZE_32)
     when Operation::TogglePlay
       @player.running ? @player.stop : @player.play(@song, @editor.step)
     when Operation::ToggleRec

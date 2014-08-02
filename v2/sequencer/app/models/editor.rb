@@ -225,6 +225,11 @@ class Editor
     notify(Event::QuantizeChange)
   end
 
+  def quantize_select(quantize)
+    @quantize = quantize
+    notify(Event::QuantizeChange)
+  end
+
   def set_channel(channel)
     return if @channel == channel
     @channel = channel
