@@ -47,7 +47,7 @@
 {
     NSLog(@"start SocketServer.");
     
-    while (0 == listen(sock, 32)) {
+    while (0 == listen(sock, 64)) {
         socklen_t len = sizeof(unixAddr);
         int fd = accept(sock, (struct sockaddr *)&unixAddr, &len);
         if (-1 == fd) {
