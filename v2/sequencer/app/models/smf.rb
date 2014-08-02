@@ -45,6 +45,8 @@ class SMF
           strategy = strategy.parse(self)
         end
         
+        @io.close
+
         @song.notes.sort_by! { |n| [n.step, n.channel, n.noteno] }
         @song
       end
@@ -442,6 +444,7 @@ class SMF
         @tracks.each do |t|
           write_track(t)
         end
+        @io.close
       end
 
       def write_header
