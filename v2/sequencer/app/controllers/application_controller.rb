@@ -1,4 +1,3 @@
-require 'fileutils'
 require 'yaml'
 
 class ApplicationController
@@ -28,7 +27,6 @@ class ApplicationController
   end
 
   def initialize(*args)
-    init_config
     build_keymap
 
     @app = Application.new
@@ -40,14 +38,6 @@ class ApplicationController
     @command_view = CommandView.new(@app, @screen, y: @screen.height - 1, height: 1)
 
     @exit = false
-  end
-
-  def init_config
-    FileUtils.mkdir_p($work_dir, mode: 0755) unless Dir.exists? $work_dir
-
-    ["key_mapping.yml", "settings.yml"].each do |file|
-      FileUtils.copy("#{$root_dir}/config/#{file}", "#{$work_dir}/#{file}") unless File.exists? "#{$work_dir}/#{file}"
-    end
   end
 
   def build_keymap

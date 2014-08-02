@@ -1,2 +1,9 @@
 documens: '~/namidi'
 history_size: 1000
+defaults:
+  noteno: 60
+  channel_1: 0
+  channel_2: 1
+  quantize: '1/8'
+  velocity: 100
+  octave: 3

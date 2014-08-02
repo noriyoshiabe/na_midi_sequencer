@@ -7,7 +7,7 @@ class CommandParser
   def initialize
     @index = 0
     @history = File.exists?(HISTORY_FILE) ? File.readlines(HISTORY_FILE).map { |s| s.gsub!(/(\r\n|\r|\n)/, '') } : []
-    @history_size = YAML.load_file("#{$work_dir}/settings.yml")["history_size"]
+    @history_size = YAML.load_file("#{$work_dir}/settings.yml")["history_size"] || 1000
   end
 
   def save_history

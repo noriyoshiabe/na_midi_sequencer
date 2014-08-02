@@ -24,9 +24,9 @@ class PianoRollView < View
 
     track_height = height / 2 - 2
     @track1 = TrackView.new(app, self, y: TRACK_OFFSET_Y, height: track_height)
-    @track1.channel = 0
+    @track1.channel = @app.editor.defaults["channel_1"]
     @track2 = TrackView.new(app, self, y: TRACK_OFFSET_Y + track_height + 1, height: track_height)
-    @track2.channel = 1
+    @track2.channel = @app.editor.defaults["channel_2"]
 
     @active_track = @track1.activate
 

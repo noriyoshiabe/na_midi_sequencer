@@ -92,18 +92,37 @@ class Editor
   attr_accessor :recording
   attr_accessor :chord_input
 
+  attr_accessor :defaults
+
   def initialize(song)
+    load_defaults
+
     @song = song
     set_default
   end
 
+  def load_defaults
+    @defaults = YAML.load_file("#{$work_dir}/settings.yml")["defaults"] || {}
+    @defaults["noteno"]    ||= 60
+    @defaults["channel_1"] ||= 0
+    @defaults["channel_2"] ||= 1
+    @defaults["velocity"]  ||= 100
+    @defaults["octave"]    ||= 3
+
+    QUANTIZE_LABELS.each do |k, v|
+      @defaults["quantize"] = k if @defaults["quantize"] == v
+    end
+
+    @defaults["quantize"] = QUANTIZE_8 if @defaults["quantize"].instance_of? String
+  end
+
   def set_default
     @step = 0
-    @noteno = 60
-    @channel = 0
-    @octave = 3
-    @velocity = 100
-    @quantize = QUANTIZE_8
+    @noteno   = @defaults["noteno"]
+    @channel  = @defaults["channel_1"]
+    @octave   = @defaults["octave"]
+    @velocity = @defaults["velocity"]
+    @quantize = @defaults["quantize"]
     @undo_stack = []
     @redo_stack = []
     @recording = false
