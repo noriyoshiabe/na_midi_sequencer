@@ -42,6 +42,7 @@ class Application
     :Insert,
     :Read,
     :Write,
+    :ProgramChange,
   ]
 
   Event = enum [
@@ -196,6 +197,8 @@ class Application
       read_song(args[0])
     when Operation::Write
       write_song(args[0])
+    when Operation::ProgramChange
+      MidiClient.program_change(args[0], args[1], args[2], args[3])
     end
   end
 end

@@ -28,6 +28,7 @@ class ApplicationController
 
   def initialize(*args)
     build_keymap
+    Instruments.load_settings
 
     @app = Application.new
     @app.add_observer(self)

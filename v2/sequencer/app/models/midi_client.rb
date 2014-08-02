@@ -14,4 +14,16 @@ class MidiClient
       s.write([0x80 | note.channel, note.noteno, 0].pack('C*'))
     end
   end
+
+  def self.program_change(channel, msb, lsb, number)
+    UNIXSocket.open(SOCK_FILE) do |s|
+      s.write([0xB0 | channel, 0x00, msb].pack('C*'))
+    end
+    UNIXSocket.open(SOCK_FILE) do |s|
+      s.write([0xB0 | channel, 0x20, lsb].pack('C*'))
+    end
+    UNIXSocket.open(SOCK_FILE) do |s|
+      s.write([0xC0 | channel, number].pack('C*'))
+    end
+  end
 end

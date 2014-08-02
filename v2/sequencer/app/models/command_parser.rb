@@ -365,6 +365,26 @@ class CommandParser
       end
     end
 
+    class ProgramChange < Base
+      def initialize(line)
+        @operation = Application::Operation::ProgramChange
+        tokens = line.split
+        @args = [tokens[1].to_i, tokens[2].to_i, tokens[3].to_i, tokens[4].to_i]
+      end
+
+      def self.name
+        'program'
+      end
+
+      def self.definition
+        'program <channel> <msb> <lsb> <number>'
+      end
+
+      def self.syntax_error(line)
+        line !~ /^program\s+[0-9]{1,2}\s+[0-9]{1,3}\s+[0-9]{1,3}\s+[0-9]{1,3}\s*$/
+      end
+    end
+
     class Quit < Base
       def initialize(line)
         @operation = Application::Operation::Quit
@@ -397,6 +417,7 @@ class CommandParser
       Insert,
       Read,
       Write,
+      ProgramChange,
       Quit,
     ]
 
