@@ -115,7 +115,8 @@ class CommandView < View
                   cmpl = nil
                   file_list.each do |s|
                     cmpl ||= s
-                    cmpl = s.split(//).zip(cmpl.split(//)).select{ |e| e.uniq.size==1 }.map{|e| e[0]}.join
+                    brk = false
+                    cmpl = s.split(//).zip(cmpl.split(//)).select{ |e| res = e.uniq.size==1 && !brk; brk = !res; res }.map{|e| e[0]}.join
                   end
                   head = ":#{candidates[0].name} #{cmpl}"
                   cursor = head.size
@@ -123,6 +124,16 @@ class CommandView < View
                 end
               end
             end
+          elsif 1 < candidates.size
+            cmpl = nil
+            candidates.each do |c|
+              cmpl ||= c.name
+              brk = false
+              cmpl = c.name.split(//).zip(cmpl.split(//)).select{ |e| res = e.uniq.size==1 && !brk; brk = !res; res }.map{|e| e[0]}.join
+            end
+            head = ":#{cmpl}"
+            cursor = head.size
+            line = head
           end
         when Key::KEY_CTRL_J
           if 1 != candidates.size
