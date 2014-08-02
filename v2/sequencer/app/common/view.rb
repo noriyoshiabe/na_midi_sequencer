@@ -13,7 +13,8 @@ class View
     @subviews = []
     @visible = true
     @parent = parent
-    @popup = nil
+
+    @@popup = nil
   end
 
   def render
@@ -26,6 +27,8 @@ class View
 
     after_render_child
     @window.refresh
+
+    @@popup.render if @@popup
   end
 
   def on_render
@@ -122,27 +125,47 @@ class View
     if @parent
       @parent.popup(lines, left + offset_x, top + offset_y, alert)
     else
-      popup_close if @popup
-
-      width = lines.map(&:length).max
-      @popup = @window.subwin(lines.length, width, offset_y, offset_x)
-      @popup.attron(alert ? Curses.color_pair(Color::WHITE_RED) : Curses.color_pair(Color::WHITE_MAGENTA))
-      lines.each_with_index do |l, i|
-        @popup.setpos(i, 0)
-        @popup.addstr(sprintf("%-#{width}s", l))
-      end
-      @popup.attroff(Curses::A_COLOR|Curses::A_BOLD|Curses::A_REVERSE)
-      @popup.refresh
+      popup_close if @@popup
+      @@popup = Popup.new(@window, lines, offset_x, offset_y, alert)
     end
   end
 
   def popup_close
     if @parent
       @parent.popup_close
-    elsif @popup
-      @popup.close
-      @popup = nil
+    elsif @@popup
+      @@popup.close
+      @@popup = nil
       render
+    end
+  end
+
+  class Popup
+    def initialize(window, lines, offset_x, offset_y, alert)
+      @window = window
+      @lines = lines
+      @offset_x = offset_x
+      @offset_y = offset_y
+      @alert = alert
+
+      @width = @lines.map(&:length).max
+      @popup = @window.subwin(@lines.length, @width, @offset_y, @offset_x)
+
+      render
+    end
+
+    def render
+      @popup.attron(@alert ? Curses.color_pair(Color::WHITE_RED) : Curses.color_pair(Color::WHITE_MAGENTA))
+      @lines.each_with_index do |l, i|
+        @popup.setpos(i, 0)
+        @popup.addstr(sprintf("%-#{@width}s", l))
+      end
+      @popup.attroff(Curses::A_COLOR|Curses::A_BOLD|Curses::A_REVERSE)
+      @popup.refresh
+    end
+
+    def close
+      @popup.close
     end
   end
 end
