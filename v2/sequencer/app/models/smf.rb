@@ -3,7 +3,7 @@ require 'nkf'
 class SMF
 
   def self.directory
-    dir = YAML.load_file("#{$work_dir}/settings.yml")["documens"] || '~/namidi'
+    dir = YAML.load_file("#{$work_dir}/settings.yml")["documents"] || '~/namidi'
     FileUtils.mkdir_p(File.expand_path("#{dir}"), mode: 0755) unless Dir.exists? File.expand_path("#{dir}")
     dir
   end

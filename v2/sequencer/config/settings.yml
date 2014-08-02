@@ -1,4 +1,4 @@
-documens: '~/namidi'
+documents: '~/namidi'
 history_size: 1000
 defaults:
   noteno: 60
