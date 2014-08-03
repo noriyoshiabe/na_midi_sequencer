@@ -13,7 +13,9 @@ class SMF
   end
 
   def self.write(song, filename)
-    Writer.write(song, File.expand_path("#{directory}/#{filename}"))
+    path = File.expand_path("#{directory}/#{filename}")
+    FileUtils.mkdir_p(File.dirname(path), mode: 0755) unless Dir.exists? File.dirname(path)
+    Writer.write(song, path)
   end
 
   class Reader
