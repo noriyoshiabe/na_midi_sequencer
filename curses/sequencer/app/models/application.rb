@@ -29,6 +29,7 @@ class Application
     :Quantize8,
     :Quantize16,
     :Quantize32,
+    :Quantize64,
     :TogglePlay,
     :ToggleRec,
     :ToggleChordInput,
@@ -173,6 +174,8 @@ class Application
       @editor.quantize_select(Editor::QUANTIZE_16)
     when Operation::Quantize32
       @editor.quantize_select(Editor::QUANTIZE_32)
+    when Operation::Quantize64
+      @editor.quantize_select(Editor::QUANTIZE_64)
     when Operation::TogglePlay
       @player.running ? @player.stop : @player.play(@song, @editor.step)
     when Operation::ToggleRec
