@@ -11,6 +11,7 @@ class Song
 
   def initialize
     @notes = []
+    @indexes = {}
     start = 0
     @measures = [Measure.new(0, 0, 0.0)]
     extend_measure(INITIAL_MEASURE_NUM - 1)
@@ -141,29 +142,54 @@ class Song
     measure.marker = text
   end
 
+  def build_indexes
+    @indexes.clear
+    @notes.each do |note|
+      note.index.each do |i|
+        @indexes[i] ||= []
+        @indexes[i] << note
+      end
+    end
+  end
+
   def add_note(note)
     @notes << note
-    @notes.sort_by! { |n| [n.step, n.channel, n.noteno] }
   end
 
   def remove_note(note)
     @notes.delete(note)
   end
 
-  def notes_from(from, channel = nil, cross = false)
-    notes_by_range(from, Float::INFINITY, channel, cross)
+  def notes_from(from, channel = nil)
+    @notes.select do |n|
+      from <= n.step
+    end
   end
 
   def notes_by_range(from, to, channel = nil, cross = false)
+    ret = []
+
     if cross
-      @notes.select do |n|
-        from <= n.end_step && n.step < to && (channel.nil? || n.channel == channel)
+      ((from / Song::TIME_BASE)..(to / Song::TIME_BASE)).each do |i|
+        arr = @indexes[i]
+        if arr
+          ret += arr.select do |n|
+            from <= n.end_step && n.step < to && (channel.nil? || n.channel == channel)
+          end
+        end
       end
     else
-      @notes.select do |n|
-        from <= n.step && n.step < to && (channel.nil? || n.channel == channel)
+      ((from / Song::TIME_BASE)..(to / Song::TIME_BASE)).each do |i|
+        arr = @indexes[i]
+        if arr
+          ret += arr.select do |n|
+            from <= n.step && n.step < to && (channel.nil? || n.channel == channel)
+          end
+        end
       end
     end
+
+    ret.uniq
   end
 
   def has_tempo_change(measure_no)

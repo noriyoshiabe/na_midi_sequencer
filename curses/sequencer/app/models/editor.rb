@@ -421,10 +421,12 @@ class Editor
       def execute
         @notes.each { |n| @editor.song.add_note(n) }
         @editor.step = @next_step
+        @editor.song.build_indexes
       end
       def undo
         @notes.each { |n| @editor.song.remove_note(n) }
         @editor.step = @prev_step
+        @editor.song.build_indexes
       end
     end
 
@@ -438,10 +440,12 @@ class Editor
       def execute
         @notes.each { |n| @editor.song.remove_note(n) }
         @editor.step = @next_step
+        @editor.song.build_indexes
       end
       def undo
         @notes.each { |n| @editor.song.add_note(n) }
         @editor.step = @prev_step
+        @editor.song.build_indexes
       end
     end
 
@@ -457,11 +461,13 @@ class Editor
       def execute
         @notes.each { |n| n.gatetime += @quantize }
         @editor.step = @next_step
+        @editor.song.build_indexes
       end
 
       def undo
         @notes.each { |n| n.gatetime -= @quantize }
         @editor.step = @prev_step
+        @editor.song.build_indexes
       end
     end
 
@@ -477,11 +483,13 @@ class Editor
       def execute
         @notes.each { |n| n.gatetime -= @quantize }
         @editor.step = @next_step
+        @editor.song.build_indexes
       end
 
       def undo
         @notes.each { |n| n.gatetime += @quantize }
         @editor.step = @prev_step
+        @editor.song.build_indexes
       end
     end
 
@@ -504,12 +512,14 @@ class Editor
         @copied.each do |n|
           @editor.song.add_note(n)
         end
+        @editor.song.build_indexes
       end
 
       def undo
         @copied.each do |n|
           @editor.song.remove_note(n)
         end
+        @editor.song.build_indexes
       end
     end
 
@@ -529,6 +539,7 @@ class Editor
           n.step += @step_moved
           n.channel = @channel_to if @channel_to
         end
+        @editor.song.build_indexes
       end
 
       def undo
@@ -536,6 +547,7 @@ class Editor
           n.step -= @step_moved
           n.channel = @channel_from if @channel_from
         end
+        @editor.song.build_indexes
       end
     end
 
@@ -551,12 +563,14 @@ class Editor
         @eraced.each do |n|
           @editor.song.remove_note(n)
         end
+        @editor.song.build_indexes
       end
 
       def undo
         @eraced.each do |n|
           @editor.song.add_note(n)
         end
+        @editor.song.build_indexes
       end
     end
 
@@ -576,12 +590,14 @@ class Editor
         @deleted_measures = @editor.song.delete_measure(@from, @length)
         @deleted.each { |n| @editor.song.remove_note(n) }
         @moved.each { |n| n.step -= @step_moved }
+        @editor.song.build_indexes
       end
 
       def undo
         @moved.each { |n| n.step += @step_moved }
         @deleted.each { |n| @editor.song.add_note(n) }
         @editor.song.insert_measure(@from, @deleted_measures)
+        @editor.song.build_indexes
       end
     end
 
@@ -600,11 +616,13 @@ class Editor
 
         @moved = @editor.song.notes_from(step_from)
         @moved.each { |n| n.step += @step_moved }
+        @editor.song.build_indexes
       end
 
       def undo
         @moved.each { |n| n.step -= @step_moved }
         @editor.song.delete_measure(@from, @length)
+        @editor.song.build_indexes
       end
     end
 

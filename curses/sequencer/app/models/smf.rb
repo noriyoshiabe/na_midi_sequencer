@@ -49,7 +49,7 @@ class SMF
         
         @io.close
 
-        @song.notes.sort_by! { |n| [n.step, n.channel, n.noteno] }
+        @song.build_indexes
         @song
       end
 

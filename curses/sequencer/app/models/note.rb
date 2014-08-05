@@ -17,6 +17,10 @@ class Note
     @step + @gatetime
   end
 
+  def index
+    ((@step / Song::TIME_BASE)..(end_step / Song::TIME_BASE)).to_a
+  end
+
   def to_s
     sprintf("step=%d channel=%d noteno=%d velocity=%d gatetime=%d", @step, @channel, @noteno, @velocity, @gatetime)
   end
