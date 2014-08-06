@@ -185,22 +185,46 @@ class Song
     measure.marker = text
   end
 
+  def index_note(note)
+    note.index.each do |i|
+      @note_index[i] ||= []
+      @note_index[i] << note
+    end
+  end
+
+  def unindex_note(note)
+    note.index.each do |i|
+      @note_index[i].delete(note)
+    end
+  end
+
   def build_note_index
     @note_index.clear
     @notes.each do |note|
-      note.index.each do |i|
-        @note_index[i] ||= []
-        @note_index[i] << note
-      end
+      index_note(note)
     end
   end
 
   def add_note(note)
     @notes << note
+    index_note(note)
   end
 
   def remove_note(note)
     @notes.delete(note)
+    unindex_note(note)
+  end
+
+  def move_note(note, moved)
+    unindex_note(note)
+    note.step += moved
+    index_note(note)
+  end
+
+  def change_gatetime(note, extended)
+    unindex_note(note)
+    note.gatetime += extended
+    index_note(note)
   end
 
   def notes_from(from, channel = nil)
