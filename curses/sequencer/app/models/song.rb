@@ -15,9 +15,9 @@ class Song
 
   def initialize
     @notes = []
-    @note_index = {}
-    @measure_time_index = {}
-    @measure_step_index = {}
+    @note_index = []
+    @measure_time_index = []
+    @measure_step_index = []
     start = 0
     measure_zero = Measure.new(0, 0, 0.0)
     @measures = [measure_zero]
