@@ -18,7 +18,7 @@ class Note
   end
 
   def index
-    ((@step / Song::TIME_BASE)..(end_step / Song::TIME_BASE)).to_a
+    ((@step / Song::NOTE_INDEX_BASE)..(end_step / Song::NOTE_INDEX_BASE)).to_a
   end
 
   def to_s

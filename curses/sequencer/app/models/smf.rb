@@ -49,7 +49,7 @@ class SMF
         
         @io.close
 
-        @song.build_indexes
+        @song.build_note_index
         @song
       end
 

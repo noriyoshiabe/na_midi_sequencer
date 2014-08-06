@@ -6,25 +6,39 @@ class Song
   TIME_BASE = 480
   INITIAL_MEASURE_NUM = 100
 
+  NOTE_INDEX_BASE = TIME_BASE
+  MEASURE_TIME_INDEX_BASE = 2
+  MEASURE_STEP_INDEX_BASE = TIME_BASE * 4
+
   attr_accessor :measures
   attr_accessor :notes
 
   def initialize
     @notes = []
-    @indexes = {}
+    @note_index = {}
+    @measure_time_index = {}
+    @measure_step_index = {}
     start = 0
-    @measures = [Measure.new(0, 0, 0.0)]
+    measure_zero = Measure.new(0, 0, 0.0)
+    @measures = [measure_zero]
+    index_measure(measure_zero)
     extend_measure(INITIAL_MEASURE_NUM - 1)
   end
 
   def time2step(time)
-    m = @measures.find { |m| m.time <= time && time < m.next_time }
-    m ? m.time2step(time) : false
+    arr = @measure_time_index[time.to_i / MEASURE_TIME_INDEX_BASE]
+    if arr
+      m = arr.find { |m| m.time <= time && time < m.next_time }
+      m ? m.time2step(time) : false
+    end
   end
 
   def step2time(step)
-    m = @measures.find { |m| m.step <= step && step < m.next_step }
-    m ? m.step2time(step) : false
+    arr = @measure_step_index[step / MEASURE_STEP_INDEX_BASE]
+    if arr
+      m = arr.find { |m| m.step <= step && step < m.next_step }
+      m ? m.step2time(step) : false
+    end
   end
 
   def measure_at(measure_no)
@@ -37,7 +51,27 @@ class Song
     (measure_no - (@measures.length - 1)).times do
       m = Measure.new(last.index + 1, last.next_step, last.next_time, last.numerator, last.denominator, last.tempo)
       @measures << m
+      index_measure(m)
       last = m
+    end
+  end
+
+  def index_measure(measure)
+    measure.time_index.each do |i|
+      @measure_time_index[i] ||= []
+      @measure_time_index[i] << measure
+    end
+    measure.step_index.each do |i|
+      @measure_step_index[i] ||= []
+      @measure_step_index[i] << measure
+    end
+  end
+
+  def build_measure_index
+    @measure_time_index.clear
+    @measure_step_index.clear
+    @measures.each do |m|
+      index_measure(m)
     end
   end
 
@@ -48,8 +82,11 @@ class Song
       m.step = prev ? prev.next_step : 0
       m.time = prev ? prev.next_time : 0.0
       m.calc_next
+      index_measure(m)
       prev = m
     end
+
+    build_measure_index
   end
 
   def delete_measure(from, length)
@@ -71,7 +108,9 @@ class Song
         @measures.insert(from, m)
       end
     end
+
     rebuild_measures
+    build_note_index
   end
 
   def measure2step(measure_no)
@@ -83,7 +122,7 @@ class Song
       extend_measure(@measures.last.index + 1)
     end
 
-    @measures.find { |m| m.step <= step && step < m.next_step }
+    @measure_step_index[step / MEASURE_STEP_INDEX_BASE].find { |m| m.step <= step && step < m.next_step }
   end
 
   def step2position(step)
@@ -111,6 +150,8 @@ class Song
       m.calc_next
       prev = m
     end
+
+    build_measure_index
   end
 
   def set_beat(index, numerator, denominator)
@@ -134,6 +175,8 @@ class Song
       m.calc_next
       prev = m
     end
+
+    build_measure_index
   end
 
   def set_marker(index, text)
@@ -142,12 +185,12 @@ class Song
     measure.marker = text
   end
 
-  def build_indexes
-    @indexes.clear
+  def build_note_index
+    @note_index.clear
     @notes.each do |note|
       note.index.each do |i|
-        @indexes[i] ||= []
-        @indexes[i] << note
+        @note_index[i] ||= []
+        @note_index[i] << note
       end
     end
   end
@@ -170,8 +213,8 @@ class Song
     ret = []
 
     if cross
-      ((from / Song::TIME_BASE)..(to / Song::TIME_BASE)).each do |i|
-        arr = @indexes[i]
+      ((from / NOTE_INDEX_BASE)..(to / NOTE_INDEX_BASE)).each do |i|
+        arr = @note_index[i]
         if arr
           ret += arr.select do |n|
             from <= n.end_step && n.step < to && (channel.nil? || n.channel == channel)
@@ -179,8 +222,8 @@ class Song
         end
       end
     else
-      ((from / Song::TIME_BASE)..(to / Song::TIME_BASE)).each do |i|
-        arr = @indexes[i]
+      ((from / NOTE_INDEX_BASE)..(to / NOTE_INDEX_BASE)).each do |i|
+        arr = @note_index[i]
         if arr
           ret += arr.select do |n|
             from <= n.step && n.step < to && (channel.nil? || n.channel == channel)
@@ -260,6 +303,14 @@ class Song
 
     def to_s
       sprintf("index=%d step=%d time=%f numerator=%d denominator=%d tempo=%f next_step=%d next_time=%f", @index, @step, @time, @numerator, @denominator, @tempo, @next_step, @next_time)
+    end
+
+    def time_index
+      ((@time.to_i / MEASURE_TIME_INDEX_BASE)..(@next_time.to_i / MEASURE_TIME_INDEX_BASE))
+    end
+
+    def step_index
+      ((@step / MEASURE_STEP_INDEX_BASE)..(@next_step / MEASURE_STEP_INDEX_BASE))
     end
   end
 
