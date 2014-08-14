@@ -1,0 +1,25 @@
+documents: '~/namidi'
+history_size: 1000
+defaults:
+  noteno: 60
+  channel_1: 0
+  channel_2: 1
+  quantize: '1/8'
+  velocity: 100
+  octave: 3
+instruments:
+  ch_0:  'Acoustic Piano'
+  ch_1:  'Acoustic Piano'
+  ch_2:  'Acoustic Piano'
+  ch_3:  'Acoustic Piano'
+  ch_4:  'Acoustic Piano'
+  ch_5:  'Acoustic Piano'
+  ch_6:  'Acoustic Piano'
+  ch_7:  'Acoustic Piano'
+  ch_8:  'Acoustic Piano'
+  ch_9:  'Drums'
+  ch_10: 'Acoustic Piano'
+  ch_11: 'Acoustic Piano'
+  ch_13: 'Acoustic Piano'
+  ch_14: 'Acoustic Piano'
+  ch_15: 'Acoustic Piano'
