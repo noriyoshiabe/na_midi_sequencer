@@ -5,7 +5,7 @@ NA MIDI Sequencer
 
 ## 動作環境
 - OSX Mavericks
-- Xcode 5.1 以上 (サーバープログラムのビルドで使用)
+- Xcode 5.1 以上 (C拡張のビルドに必要)
 - Ruby 2.0 以上
 - Audio Units 対応音源
 
@@ -31,26 +31,23 @@ AU Lab はいつからかMacに標準で付属しなくなりました。
 - 「Edit」->「Add Audio Unit Instrument」
 - 今Addした「Stereo Mix」のActiveChannelをすべてオンに
 
-### サーバープログラムのビルド
-- Xcodeでcurses/namidi/namidi.xcodeprojをビルド
-- 生成されたnamidi実行ファイルを任意の場所にコピー
+### C拡張のビルド
+```
+cd <リポジトリルート>/curses/ext/midi_client
+ruby extconf.rb
+make
+```
 
 
 ## 起動方法
 - AU Labを起動しておく
-- ターミナルからnamidi(サーバープログラム)を起動
-    - 終了時はCTRL-C
-- クライアントプログラムのルートディレクトリに移動
-    - `cd <リポジトリルート>/curses/sequencer`
-- クライアントプログラムの起動
+- プログラムのルートディレクトリに移動
+    - `cd <リポジトリルート>/curses`
+- 起動
     - `ruby main.rb`
 
 
 ## 生成されるファイル/ディレクトリについて
-### ソケット
-サーバープログラムは/tmp/namidi.sockでMIDIメッセージを待ち受けます。  
-基本的にMIDIメッセージのバイナリデータをそのままIACドライバにスルーしているだけなのでncコマンドでも音は鳴らせます。
-
 ### 作業ディレクトリ
 クライアントプログラム起動時に~/.namidi/ ディレクトリが無ければ作成します。  
 各種設定ファイル(yml)、コマンドヒストリ、ログファイル(現状、開発時以外は何も出していない)が置かれます。
