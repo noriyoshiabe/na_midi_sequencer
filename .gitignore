@@ -3,3 +3,8 @@ xcuserdata/
 bin/
 tmp/
 log/
+
+*.o
+*.bundle
+*.log
+Makefile
