@@ -10,7 +10,9 @@ class Player
     :PlayingPoition,
   ]
 
-  def initialize
+  def initialize(midi_client)
+    @midi_client = midi_client
+
     @echo_queue = []
     @mutex = Mutex.new
     @cond_val =  ConditionVariable.new
@@ -36,14 +38,14 @@ class Player
         @cond_val.wait(@mutex) if @echo_queue.empty? && echo_off_list.empty?
         echo = @echo_queue.shift
         if echo
-          MidiClient.note_on(echo[:note])
+          @midi_client.note_on(echo[:note])
           echo_off_list.push echo
         end
 
         now = Time.now
         echo_offs = echo_off_list.select { |e| e[:end_time] <= now }
         echo_offs.each do |e|
-          MidiClient.note_off(e[:note])
+          @midi_client.note_off(e[:note])
         end
         
         echo_off_list -= echo_offs
@@ -93,11 +95,11 @@ class Player
       end
 
       notes.each do |n|
-        MidiClient.note_on(n)
+        @midi_client.note_on(n)
       end
 
       note_offs.each do |n|
-        MidiClient.note_off(n)
+        @midi_client.note_off(n)
       end
 
       note_off_list -= note_offs
@@ -110,7 +112,7 @@ class Player
     end
 
     note_off_list.each do |n|
-      MidiClient.note_off(n)
+      @midi_client.note_off(n)
     end
   end
 end

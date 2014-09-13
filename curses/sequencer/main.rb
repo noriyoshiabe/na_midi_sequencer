@@ -8,6 +8,9 @@ FileUtils.mkdir_p($work_dir, mode: 0755) unless Dir.exists? $work_dir
   FileUtils.copy("#{$root_dir}/config/#{file}", "#{$work_dir}/#{file}") unless File.exists? "#{$work_dir}/#{file}"
 end
 
+$:.unshift $root_dir + '/ext'
+$:.unshift $root_dir + '/lib'
+
 Dir[$root_dir + '/app/*'].each { |dir| $:.unshift dir }
 Dir[$root_dir + '/app/**/*.rb'].each { |file| require file }
 

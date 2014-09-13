@@ -1,4 +1,5 @@
 require 'observer'
+require 'midi_client'
 
 class Application
   include Observable
@@ -72,11 +73,14 @@ class Application
   def initialize(*args)
     @song = Song.new
     @editor = Editor.new(song)
-    @player = Player.new
+    @midi_client = MidiClient.new
+    @player = Player.new(@midi_client)
 
     @song.add_observer(self)
     @editor.add_observer(self)
     @player.add_observer(self)
+
+    Instruments.load_settings(@midi_client)
   end
 
   def read_song(filename)
@@ -112,6 +116,7 @@ class Application
   end
 
   def quit
+    @midi_client.close
     notify(Event::Type::App, Event::Quit)
   end
 
@@ -213,7 +218,7 @@ class Application
     when Operation::Write
       write_song(args[0])
     when Operation::ProgramChange
-      MidiClient.program_change(args[0], args[1], args[2], args[3])
+      @midi_client.program_change(args[0], args[1], args[2], args[3])
     end
   end
 end
