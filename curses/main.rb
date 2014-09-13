@@ -1,6 +1,6 @@
 require 'fileutils'
 
-$root_dir = File.dirname(__FILE__)
+$root_dir = File.expand_path(File.dirname(__FILE__))
 $work_dir = File.expand_path("~/.namidi")
 
 FileUtils.mkdir_p($work_dir, mode: 0755) unless Dir.exists? $work_dir
