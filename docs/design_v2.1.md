@@ -73,6 +73,10 @@ Ctrl-u|縦に画面半分上がる
 Ctrl-d|縦に画面半分下がる
 Ctrl-b|縦に1画面分上がる
 Ctrl-f|縦に1画面分下がる
+/[,\<marker-regex\>],<CR>|マーカーを前方検索 \*
+?[,\<marker-regex\>],<CR>|マーカーを後方検索 \*
+
+\* \<marker-regex\> 省略時はラスト値でVim同様にhistory管理
 
 #### ヤンク/切り取り
 
